@@ -16,7 +16,7 @@ struct lista* prox;
 // ASSINATURAS DAS FUNÇÕES
 
 int menuPrincipal(void);
-void cadastroAluno(void);
+void Dadospessoais(void);
 void cadastroSerie(void);
 void desenvolvimentoAluno(void);
 void financeiro(void);
@@ -35,7 +35,7 @@ int main(void){
     switch (opc)
     {
     case 1:
-        cadastroAluno();
+        Dadospessoais();
         break;
     case 2:
         cadastroSerie();
@@ -74,8 +74,26 @@ int menuPrincipal(void){
 	return escolha;
 	}
 }
-void cadastroAluno(void){
+void Dadospessoais(void){
 	printf("CADASTRO DE ALUNO!\n");
+	Lista *cadastro=malloc(sizeof(Lista));
+	printf("Nome do Usuario : ");
+	scanf(" %80[^\n]",cadastro->nome);
+	printf("informe o sexo (M) ou (F) : ");
+	scanf("%c",cadastro->sexo);
+	printf("Informe seu CPF: ");
+	scanf("%d",&cadastro->cpf);
+	printf("informe a idade : ");
+	scanf("%d",&cadastro->idade);
+	printf("informe o celular : ");
+	scanf("%d",&cadastro->celular);
+	printf("informe a cidade : ");
+	scanf(" %80[^\n]",cadastro->cidade);
+	printf("informe o E-MAIL : ");
+	scanf(" %80[^\n]",cadastro->email);
+	printf("Informe a data de Nascimento : ");
+	scanf("%d",&cadastro->data);
+
 	}
 void cadastroSerie(void){
 	printf("CADASTRO DE SÉRIES!\n");
