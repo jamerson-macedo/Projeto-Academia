@@ -32,7 +32,7 @@ int menuPrincipal(void);
 Lista* Dadospessoais(Lista* Aluno);
 void cadastroSerie(void);
 void desenvolvimentoAluno(void);
-void financeiro(void);
+int financeiro(void);
 int menuAluno(void);
 Lista* criarLista();
 Lista* inserir_dados(Lista *aluno,char *nome,char sexo,int cpf,int idade,int celular,char *cidade,char *email,int data);
@@ -67,7 +67,6 @@ int main(void){
             Aluno=Dadospessoais(Aluno);
             break;
         case 2:
-
             Aluno=inserir_Medidas(Aluno,cpf);
             break;
         case 3:
@@ -108,6 +107,7 @@ goto inicio;
 
 int menuPrincipal(void){
 	int escolha;
+
 	{
 	printf("                -----------------------------------\n");
 	printf("                #   1 - CADASTRO DE ALUNO         #\n");
@@ -196,7 +196,7 @@ for (p=Aluno;p!=NULL;p=p->prox){
     printf("\n\n MEDIDAS REGISTRADAS COM SUCESSO !!\n\n");
     }
     else
-        printf("CPF NÃO ENCONTRADO");
+        printf("\n\nCPF NÃO ENCONTRADO\n\n");
 return Aluno;
 
 }
@@ -263,9 +263,23 @@ void Saude_Aluno(Lista* Aluno,int cpf){
 void desenvolvimentoAluno(void){
 	printf("DESENVOLVIMENTO DE ALUNO!\n");
 	}
-void financeiro(void){
+int financeiro(void){
+    int escolha;
+    do{
 	printf("FINANCEIRO!\n");
-	}
+	printf("                -----------------------------------\n");
+	printf("                #   1 - ALUNOS EM ATRASOS         #\n");
+	printf("                #   2 - DESPESAS DA ACADEMIA      #\n");
+	printf("                #   3 - ALIUNOS ATIVOS            #\n");
+	printf("                #   4 - RELATORIOS                #\n");
+	printf("                #   0 - SAIR                      #\n");
+	printf("                -----------------------------------\n");
+	printf("\n");
+	printf(">>> Escolha sua opção: ");
+	scanf("%d", &escolha);
+    }while(escolha>4);
+    return escolha;
+}
 
 Lista* criarLista(){
 return NULL;
