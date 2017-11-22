@@ -232,8 +232,7 @@ for (p=Aluno;p!=NULL;p=p->prox){
 	scanf("%d",&p->data);
 	fflush(stdin);
     }
-    }
-    return Aluno;
+}
 }
 
 
