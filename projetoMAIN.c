@@ -20,7 +20,7 @@ typedef struct pagamentos{
 
 typedef struct medidas{
 	char biceps[5];
-	char  triceps[5];
+	char triceps[5];
 	char peito[5];
 	char coxa[5];
 	char kg[5];
@@ -28,7 +28,7 @@ typedef struct medidas{
 
 typedef struct lista{
 	char nome[80];
-	char sexo[1];
+	char sexo[2];
 	char cpf[12];
 	char idade[3];
 	char celular[20];
@@ -171,9 +171,9 @@ int menuAluno(void){
 	printf("               -----------------------------------\n");
 	printf("\n");
 	printf(">>> Escolha sua opção: ");
-	printf("\n");
 	scanf("%d", &escolha);
-
+	printf("\n");
+	
 	return escolha;
 	}
 }
@@ -215,12 +215,12 @@ Lista* Dadospessoais(Lista* Aluno){
 		}
 	
 	printf("\nInforme a idade: ");
-	scanf(" %3[^\n]",novo->idade);
+	scanf(" %2[^\n]",novo->idade);
 	fflush(stdin);
 	int val4 = validaIdade(novo->idade);
 	while(val4 == 1){
 		printf("\nInforme a idade novamente: ");
-		scanf(" %3[^\n]", novo->idade);
+		scanf(" %2[^\n]", novo->idade);
 		fflush(stdin);
 		val4 = validaIdade(novo->idade);
 		}
@@ -286,7 +286,7 @@ Lista* inserir_Medidas(Lista* Aluno){
     }
 
 	for (p=Aluno;p!=NULL;p=p->prox){
-		if(p->cpf == cpf1){
+		if(strcmp(p->cpf, cpf1) == 0){
 		printf("\nInforme o Peso do Aluno: ");
 		scanf(" %4[^\n]", p->medidas.kg);
 		int val1 = validaMedidas(p->medidas.kg);
@@ -346,96 +346,95 @@ Lista* inserir_Medidas(Lista* Aluno){
 }
 
 void Atualizar_dados(Lista* Aluno, char *cpf){
-Lista* p;
-for (p=Aluno;p!=NULL;p=p->prox){
-    if(p->cpf == cpf){
-    printf("\n\n ~~ATUALIZAR CADASTRO~~\n\n");
-	printf("\nNome do Usuario: ");
-	scanf(" %80[^\n]",p->nome);
-	fflush(stdin);
-	int val = validaNome(p->nome);
-	while(val == 1){
-		printf("\nDigite o nome novamente: ");
-		scanf(" %80[^\n]", p->nome);
-		fflush(stdin);
-		val = validaNome(p->nome);
-		}
-	
-	printf("\nInforme o sexo (M) ou (F): ");
-	scanf("%s", p->sexo);
-	fflush(stdin);
-	int val2 = validaSexo(p->sexo);
-	while(val2 == 1){
-		printf("\nInforme o sexo (M) ou (F) novamente: ");
-		scanf(" %1[^\n]", p->sexo);
-		fflush(stdin);
-		val2 = validaSexo(p->sexo);
-		}
-	
-	printf("\nInforme seu CPF: ");
-	scanf(" %11[^\n]", p->cpf);
-	fflush(stdin);
-	int val3 = validaCPF(p->cpf);
-	while(val3 == 1){
-		printf("\nDigite o CPF sem pontos e tracos: ");
-		scanf(" %11[^\n]", p->cpf);
-		val3 = validaCPF(p->cpf);
-		}
-	
-	
-	printf("\nInforme a idade: ");
-	scanf("%s",p->idade);
-	fflush(stdin);
-	int val4 = validaIdade(p->idade);
-	while(val4 == 1){
-		printf("\nInforme a idade novamente: ");
-		scanf(" %3[^\n]", p->idade);
-		fflush(stdin);
-		val4 = validaIdade(p->idade);
-		}
-	
-	
-	printf("\nInforme o celular: ");
-	scanf("%s",p->celular);
-	fflush(stdin);
-	int val5 = validaTelefone(p->celular);
-	while(val5 == 1){
-		printf("\nInforme o celular novamente: ");
-		scanf(" %11[^\n]", p->celular);
-		fflush(stdin);
-		val5 = validaTelefone(p->celular);
-		}
+	Lista* p;
+	for (p=Aluno;p!=NULL;p=p->prox){
+		if(strcmp(p->cpf, cpf) == 0){
+			printf("\n\n ~~ATUALIZAR CADASTRO~~\n\n");
+			printf("\nNome do Usuario: ");
+			scanf(" %80[^\n]",p->nome);
+			fflush(stdin);
+			int val = validaNome(p->nome);
+			while(val == 1){
+				printf("\nDigite o nome novamente: ");
+				scanf(" %80[^\n]", p->nome);
+				fflush(stdin);
+				val = validaNome(p->nome);
+				}
+			
+			printf("\nInforme o sexo (M) ou (F): ");
+			scanf("%s", p->sexo);
+			fflush(stdin);
+			int val2 = validaSexo(p->sexo);
+			while(val2 == 1){
+				printf("\nInforme o sexo (M) ou (F) novamente: ");
+				scanf(" %1[^\n]", p->sexo);
+				fflush(stdin);
+				val2 = validaSexo(p->sexo);
+				}
+			
+			printf("\nInforme seu CPF: ");
+			scanf(" %12[^\n]", p->cpf);
+			fflush(stdin);
+			int val3 = validaCPF(p->cpf);
+			while(val3 == 1){
+				printf("\nDigite o CPF sem pontos e tracos: ");
+				scanf(" %12[^\n]", p->cpf);
+				val3 = validaCPF(p->cpf);
+				}
+			
+			
+			printf("\nInforme a idade: ");
+			scanf(" %2[^\n]",p->idade);
+			fflush(stdin);
+			int val4 = validaIdade(p->idade);
+			while(val4 == 1){
+				printf("\nInforme a idade novamente: ");
+				scanf(" %2[^\n]", p->idade);
+				fflush(stdin);
+				val4 = validaIdade(p->idade);
+				}
+			
+			
+			printf("\nInforme o celular [sem pontos e traços]: ");
+			scanf(" %11[^\n]",p->celular);
+			fflush(stdin);
+			int val5 = validaTelefone(p->celular);
+			while(val5 == 1){
+				printf("\nInforme o celular [sem pontos e traços] novamente: ");
+				scanf(" %11[^\n]", p->celular);
+				fflush(stdin);
+				val5 = validaTelefone(p->celular);
+				}
 
-	printf("\nInforme a cidade: ");
-	scanf(" %80[^\n]",p->cidade);
-	fflush(stdin);
-	int val6 = validaNome(p->cidade);
-	while(val6 == 1){
-		printf("\nInforme a cidade novamente: ");
-		scanf(" %80[^\n]", p->cidade);
-		fflush(stdin);
-		val6 = validaNome(p->cidade);
+			printf("\nInforme a cidade: ");
+			scanf(" %80[^\n]",p->cidade);
+			fflush(stdin);
+			int val6 = validaNome(p->cidade);
+			while(val6 == 1){
+				printf("\nInforme a cidade novamente: ");
+				scanf(" %80[^\n]", p->cidade);
+				fflush(stdin);
+				val6 = validaNome(p->cidade);
+				}	
+			
+			printf("\nInforme o E-MAIL: ");
+			scanf(" %80[^\n]",p->email);
+			fflush(stdin);
+			
+			
+			printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
+			scanf("%s",p->data);
+			fflush(stdin);
+			int val8 = validaData(p->data);
+			while(val8 == 1){
+				printf("\nInforme a data novamente: ");
+				scanf(" %10[^\n]", p->data);
+				fflush(stdin);
+				val8 = validaData(p->data);
+				}
+			}
+			printf("CADASTRO ATUALIZADO");
 		}
-	
-	
-	printf("\nInforme o E-MAIL: ");
-	scanf(" %80[^\n]",p->email);
-	fflush(stdin);
-	
-	
-	printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
-	scanf("%s",p->data);
-	fflush(stdin);
-	int val8 = validaData(p->data);
-	while(val8 == 1){
-		printf("\nInforme a data novamente: ");
-		scanf(" %10[^\n]", p->data);
-		fflush(stdin);
-		val8 = validaData(p->data);
-		}
-    }
-    printf("CADASTRO ATUALIZADO");
-	}
 }
 
 void imprimir_dados(Lista *Aluno){
@@ -445,14 +444,15 @@ void imprimir_dados(Lista *Aluno){
 			printf("vazio");
 			}
 	for (p=Aluno;p!=NULL;p=p->prox){
-		printf("\nNome do Usuario: %s",p->nome);
-		printf("\nSexo: %s",p->sexo);
-		printf("\nCPF: %s",p->cpf);
-		printf("\nIdade: %s",p->idade);
-		printf("\nCelular: %s",p->celular);
-		printf("\nCidade: %s",p->cidade);
-		printf("\nE-MAIL: %s",p->email);
-		printf("\nData de Nascimento: %s",p->data);
+		printf("\nNome do Usuario: %s", p->nome);
+		printf("\nSexo: %s", p->sexo);
+		printf("\nCPF: %s", p->cpf);
+		printf("\nIdade: %s", p->idade);
+		printf("\nCelular: %s", p->celular);
+		printf("\nCidade: %s", p->cidade);
+		printf("\nE-MAIL: %s", p->email);
+		printf("\nData de Nascimento: %s", p->data);
+		printf("\n");
 		cont++;
 	}
 	printf("\n%d\n",cont);
@@ -471,7 +471,7 @@ void Saude_Aluno(Lista* Aluno, char *cpf){
 		}
     Lista* p;
 	for (p=Aluno;p!=NULL;p=p->prox){
-		if(p->cpf==cpf2);
+		if(strcmp(p->cpf, cpf2)==0);
 		// aqui comparar
 	}
 }
@@ -546,7 +546,7 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 Lista* remover_cpf(Lista* Aluno, int valor){
 	Lista* ant=NULL;
 	Lista* p=Aluno;                  // p é aux pra percorrer
-	while((p != NULL) && strcmp(p->cpf, p-> cpf )!= valor){
+	while((p != NULL) && strcmp(p->cpf, p->cpf) != 0){
 		ant=p;
 		p=p->prox;
 		printf("\n\nentrou no while\n\n");
