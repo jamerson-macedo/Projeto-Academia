@@ -2,6 +2,7 @@
 #include <locale.h>
 #include <string.h>
 #include <stdlib.h>
+#include <conio.h>
 // STRUCT
 typedef struct pagamentos{
 	float janeiro;
@@ -24,6 +25,7 @@ typedef struct medidas{
 	char peito[5];
 	char coxa[5];
 	char kg[5];
+	char alt[5];
 }Medidas;
 
 typedef struct lista{
@@ -46,16 +48,15 @@ struct lista* prox;
 int menuPrincipal(void);
 Lista* Dadospessoais(Lista* Aluno);
 void cadastroSerie(void);
-void desenvolvimentoAluno(void);
 int financeiro(void);
 int menuAluno(void);
 Lista* criarLista();
 Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,char *celular,char *cidade,char *email,char *data);
-Lista* remover_cpf(Lista* Aluno,int valor);
+Lista* remover_cpf(Lista* Aluno, char* cpf);
 void Atualizar_dados(Lista* Aluno, char *cpf);
 void imprimir_dados(Lista *Aluno);
 Lista* inserir_Medidas(Lista* Aluno);
-void Saude_Aluno(Lista* Aluno,char *cpf);
+void Saude_Aluno(Lista* Aluno);
 void salvar(Lista* Aluno);
 int validaTelefone(char *telefone);
 int validaNome(char *cidade);
@@ -64,7 +65,9 @@ int validaIdade(char *idade);
 int validaData(char *nasc);
 int validaMedidas(char *medida);
 int validaCPF(char *cpf);
-
+int meses(void);
+void pagar(Lista* Aluno);
+void desenvolvimentoAluno(Lista* Aluno);
 // ESSA FUN«√O IR¡ CHAMAR A OUTRAS FUN«’ES APENAS
 
 int main(void){
@@ -73,6 +76,7 @@ int main(void){
     Lista* Aluno=criarLista();
 
     int opc;
+    int opc2;
     char cpf[12];
     int acesso;
     inicio:
@@ -80,50 +84,63 @@ int main(void){
 
     switch (opc){
     case 1:
-
+        system("cls");
         acesso=menuAluno();
 
         switch (acesso){
         case 1:
+            system("cls");
             Aluno=Dadospessoais(Aluno);
             break;
         case 2:
+            system("cls");
             Aluno=inserir_Medidas(Aluno);
             break;
         case 3:
-            printf("Informe o CPF para pesquisar: ");
+            system("cls");
+            printf("Informe o CPF para Pesquisar: ");
             scanf(" %11[^\n]", cpf);
 			int a = validaCPF(cpf);
 			while(a == 1){
-				printf("\nDigite o CPF sem pontos e tracos: ");
+				printf("\n CPF INVALIDO ! \n");
+				printf("Digite novamente : ");
 				scanf(" %11[^\n]", cpf);
 				a = validaCPF(cpf);
 				}
 			Atualizar_dados(Aluno,cpf);
             break;
         case 4:
+            system("cls");
             printf("Informe o CPF do aluno para excluir cadastro: ");
 			scanf(" %11[^\n]", cpf);
 			int b = validaCPF(cpf);
 			while(b == 1){
-				printf("\nDigite o CPF sem pontos e tracos: ");
+				printf("\n CPF INVALIDO ! \n");
+				printf("Digite novamente : ");
 				scanf(" %11[^\n]", cpf);
 				b = validaCPF(cpf);
 				}
-            Aluno=remover_cpf(Aluno,*cpf);
+            Aluno=remover_cpf(Aluno,cpf);
         }
-        
+
         break;
     case 2:
-        Saude_Aluno(Aluno,cpf);
+        Saude_Aluno(Aluno);
         break;
     case 3:
-        desenvolvimentoAluno();
+        desenvolvimentoAluno(Aluno);
         break;
     case 4:
-        financeiro();
-        break;
+        system("cls");
+        opc2=financeiro();
+        printf("%d",opc2);
+
+        if (opc2==1){
+            pagar(Aluno);
+            break;
+        }
     case 5:
+        system("cls");
         imprimir_dados(Aluno);
     case 0:
         exit(0);
@@ -131,7 +148,7 @@ int main(void){
         printf("\nValor inv·lido.");
         break;
     }
-    
+
 
 goto inicio;
 	return 0;
@@ -173,7 +190,7 @@ int menuAluno(void){
 	printf(">>> Escolha sua opÁ„o: ");
 	scanf("%d", &escolha);
 	printf("\n");
-	
+
 	return escolha;
 	}
 }
@@ -192,7 +209,7 @@ Lista* Dadospessoais(Lista* Aluno){
 		fflush(stdin);
 		val = validaNome(novo->nome);
 		}
-	
+
 	printf("\nInforme o sexo (M) ou (F): ");
 	scanf(" %1[^\n]", novo->sexo);
 	fflush(stdin);
@@ -203,17 +220,18 @@ Lista* Dadospessoais(Lista* Aluno){
 		fflush(stdin);
 		val2 = validaSexo(novo->sexo);
 		}
-		
+
 	printf("\nInforme seu CPF: ");
 	scanf(" %11[^\n]", novo->cpf);
 	fflush(stdin);
 	int val3 = validaCPF(novo->cpf);
 	while(val3 == 1){
-		printf("\nDigite o CPF sem pontos e tracos: ");
+		printf("\n CPF INVALIDO ! \n");
+        printf("Digite novamente : ");
 		scanf(" %11[^\n]", novo->cpf);
 		val3 = validaCPF(novo->cpf);
 		}
-	
+
 	printf("\nInforme a idade: ");
 	scanf(" %2[^\n]",novo->idade);
 	fflush(stdin);
@@ -224,7 +242,7 @@ Lista* Dadospessoais(Lista* Aluno){
 		fflush(stdin);
 		val4 = validaIdade(novo->idade);
 		}
-		
+
 	printf("\nInforme o celular: ");
 	scanf(" %11[^\n]", novo->celular);
 	fflush(stdin);
@@ -235,7 +253,7 @@ Lista* Dadospessoais(Lista* Aluno){
 		fflush(stdin);
 		val5 = validaTelefone(novo->celular);
 		}
-		
+
 	printf("\nInforme a cidade: ");
 	scanf(" %80[^\n]",novo->cidade);
 	fflush(stdin);
@@ -246,11 +264,11 @@ Lista* Dadospessoais(Lista* Aluno){
 		fflush(stdin);
 		val6 = validaNome(novo->cidade);
 		}
-	
+
 	printf("\nInforme o E-MAIL : ");
 	scanf(" %80[^\n]",novo->email);
 	fflush(stdin);
-	
+
 	printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
 	scanf(" %10[^\n]", novo->data);
 	fflush(stdin);
@@ -261,9 +279,9 @@ Lista* Dadospessoais(Lista* Aluno){
 		fflush(stdin);
 		val8 = validaData(novo->data);
 		}
-		
-	
-	
+
+
+
 	printf("\n\nCADASTRO CONCLUÕDO! \n\n");
 	Aluno=inserir_dados(Aluno,novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data);
 	return Aluno;
@@ -271,6 +289,10 @@ Lista* Dadospessoais(Lista* Aluno){
 
 Lista* inserir_Medidas(Lista* Aluno){
     char cpf1[12];
+    if(Aluno==NULL){
+            printf("\nN√O EXISTE ALUNO CADASTRADO. ");
+            exit(1);
+    }
     printf("\n\n~~ MEDIDAS~~\n\n");
     printf("DIGITE O CPF PARA INSERIR AS MEDIDAS: ");
     scanf(" %11[^\n]", cpf1);
@@ -281,9 +303,6 @@ Lista* inserir_Medidas(Lista* Aluno){
 		val0 = validaCPF(cpf1);
 		}
     Lista* p;
-    if(Aluno==NULL){
-            printf("\nN√O EXISTE ALUNO CADASTRADO. ");
-    }
 
 	for (p=Aluno;p!=NULL;p=p->prox){
 		if(strcmp(p->cpf, cpf1) == 0){
@@ -296,7 +315,7 @@ Lista* inserir_Medidas(Lista* Aluno){
 			fflush(stdin);
 			val1 = validaMedidas(p->medidas.kg);
 			}
-		
+
 		printf("\nInforme o Biceps: ");
 		scanf(" %4[^\n]", p->medidas.biceps);
 		int val2 = validaMedidas(p->medidas.biceps);
@@ -306,7 +325,7 @@ Lista* inserir_Medidas(Lista* Aluno){
 			fflush(stdin);
 			val2 = validaMedidas(p->medidas.biceps);
 			}
-		
+
 		printf("\nInforme o triceps: ");
 		scanf(" %4[^\n]", p->medidas.triceps);
 		int val3 = validaMedidas(p->medidas.triceps);
@@ -316,7 +335,7 @@ Lista* inserir_Medidas(Lista* Aluno){
 			fflush(stdin);
 			val3 = validaMedidas(p->medidas.triceps);
 			}
-		
+
 		printf("\nInforme o peitoral: ");
 		scanf(" %4[^\n]", p->medidas.peito);
 		int val4 = validaMedidas(p->medidas.peito);
@@ -326,7 +345,7 @@ Lista* inserir_Medidas(Lista* Aluno){
 			fflush(stdin);
 			val4 = validaMedidas(p->medidas.peito);
 			}
-		
+
 		printf("\nInforme a medida das pernas: ");
 		scanf(" %4[^\n]", p->medidas.coxa);
 		int val5 = validaMedidas(p->medidas.coxa);
@@ -336,7 +355,16 @@ Lista* inserir_Medidas(Lista* Aluno){
 			fflush(stdin);
 			val5 = validaMedidas(p->medidas.coxa);
 			}
-		
+        printf("\n Informe a altura : ");
+        scanf(" %4[^\n]", p->medidas.alt);
+        int val6 = validaMedidas(p->medidas.alt);
+        while (val6==1){
+            printf("\n Informe novamente a altura : ");
+            scanf(" %4[^\n]", p->medidas.alt);
+            fflush(stdin);
+            val6=validaMedidas(p->medidas.alt);
+        }
+
 		printf("\n\n MEDIDAS REGISTRADAS COM SUCESSO !!\n\n");
 		}
 		else
@@ -360,7 +388,7 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				fflush(stdin);
 				val = validaNome(p->nome);
 				}
-			
+
 			printf("\nInforme o sexo (M) ou (F): ");
 			scanf("%s", p->sexo);
 			fflush(stdin);
@@ -371,7 +399,7 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				fflush(stdin);
 				val2 = validaSexo(p->sexo);
 				}
-			
+
 			printf("\nInforme seu CPF: ");
 			scanf(" %12[^\n]", p->cpf);
 			fflush(stdin);
@@ -381,8 +409,8 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				scanf(" %12[^\n]", p->cpf);
 				val3 = validaCPF(p->cpf);
 				}
-			
-			
+
+
 			printf("\nInforme a idade: ");
 			scanf(" %2[^\n]",p->idade);
 			fflush(stdin);
@@ -393,8 +421,8 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				fflush(stdin);
 				val4 = validaIdade(p->idade);
 				}
-			
-			
+
+
 			printf("\nInforme o celular [sem pontos e traÁos]: ");
 			scanf(" %11[^\n]",p->celular);
 			fflush(stdin);
@@ -415,13 +443,13 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				scanf(" %80[^\n]", p->cidade);
 				fflush(stdin);
 				val6 = validaNome(p->cidade);
-				}	
-			
+				}
+
 			printf("\nInforme o E-MAIL: ");
 			scanf(" %80[^\n]",p->email);
 			fflush(stdin);
-			
-			
+
+
 			printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
 			scanf("%s",p->data);
 			fflush(stdin);
@@ -432,9 +460,10 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				fflush(stdin);
 				val8 = validaData(p->data);
 				}
-			}
-			printf("CADASTRO ATUALIZADO");
-		}
+				printf("\n\n ATUALIZADO COM SUCESSO\n\n");
+
+            }
+        }
 }
 
 void imprimir_dados(Lista *Aluno){
@@ -458,8 +487,13 @@ void imprimir_dados(Lista *Aluno){
 	printf("\n%d\n",cont);
 }
 
-void Saude_Aluno(Lista* Aluno, char *cpf){
+void Saude_Aluno(Lista* Aluno){
     char cpf2[12];
+    if(Aluno==NULL){
+        printf("\nN√O EXISTE ALUNO CADASTRADO\n");
+        exit(0);
+    }
+    float imc=0;
 	printf("\n\nSAU⁄DE DO ALUNO\n\n");
 	printf("\nInforme o CPF do Aluno: ");
     scanf(" %11[^\n]", cpf2);
@@ -471,29 +505,63 @@ void Saude_Aluno(Lista* Aluno, char *cpf){
 		}
     Lista* p;
 	for (p=Aluno;p!=NULL;p=p->prox){
-		if(strcmp(p->cpf, cpf2)==0);
-		// aqui comparar
-	}
+		if(strcmp(p->cpf, cpf2)==0){
+        printf("aluno encontrado !");
+        float altura=atof(p->medidas.alt);
+        float pesoc=atof(p->medidas.kg);
+        imc=pesoc/(altura*altura);
+        printf("\n%f\n",imc);
+        if (imc<=16.9){
+            printf("%s, VocÍ esta abaixo do peso ideal, com um IMC de %f.\n, Muito abaixo do peso,\n Recomenda-se que vocÍ procure se alimentar mais frequentemente\n",p->nome,imc);
+
+        }
+        else if (imc>17.0&&imc<18.4){
+            printf("%s, voce esta abaixo do peso ideal, com um IMC de %f.\n Abaixo do peso,\n ",p->nome,imc);
+        }
+        else if (imc>=18.5 && imc <=24.9){
+            printf("peso normal");
+        }
+    }
+    else
+        printf("CPF N√O ENCONTRADO");
+}
 }
 
-void desenvolvimentoAluno(void){
+void desenvolvimentoAluno(Lista* Aluno){
 	printf("DESENVOLVIMENTO DE ALUNO!\n");
-	}
+	Lista* p=Aluno;
+    if (p==NULL){
+        printf("n„o existe aluno cadastrado !!");
+        exit(1);
+    }
+    char cpf3[12];
+    printf("DIGITE O CPF DO ALUNO : ");
+    scanf(" %11[^\n]", cpf3);
+	for (p;p!=NULL;p=p->prox){
+		if(strcmp(p->cpf, cpf3) == 0){
+
+
+
+        }
+    }
+}
+
 int financeiro(void){
     int escolha;
     do{
 	printf("FINANCEIRO!\n");
 	printf("                -----------------------------------\n");
-	printf("                #   1 - ALUNOS EM ATRASOS         #\n");
+	printf("                #   1 - PAGAR MÍS                 #\n");
 	printf("                #   2 - DESPESAS DA ACADEMIA      #\n");
 	printf("                #   3 - ALUNOS ATIVOS             #\n");
 	printf("                #   4 - RELATORIOS                #\n");
+	printf("                #   5 - ALUNOS EM ATRASO          #\n");
 	printf("                #   0 - SAIR                      #\n");
 	printf("                -----------------------------------\n");
 	printf("\n");
 	printf(">>> Escolha sua opÁ„o: ");
 	scanf("%d", &escolha);
-    }while(escolha>4);
+    }while(escolha>5);
     return escolha;
 }
 
@@ -505,7 +573,7 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 	Lista* p=aluno;  // RECEBE A LISTA ALUNO
 	Lista* ant=NULL; // GUARDA A POSI«√O ANTERIOR
 	Lista* novo=(Lista*)malloc(sizeof(Lista)); // adiciona nome
-	
+
 	strcpy(novo->nome, nome);
 	strcpy(novo->sexo, sexo);
 	strcpy(novo->cpf, cpf);
@@ -515,9 +583,9 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 	strcpy(novo->email,email);
 	strcpy(novo->data, data);
 	novo->prox=NULL;
-	
+
 	// Lista vazia ?
-	
+
 	if (p==NULL){
         printf("chegou em novo ");
         // guarda o novo
@@ -543,10 +611,10 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 	return aluno;
 }
 
-Lista* remover_cpf(Lista* Aluno, int valor){
+Lista* remover_cpf(Lista* Aluno, char* cpf){
 	Lista* ant=NULL;
 	Lista* p=Aluno;                  // p È aux pra percorrer
-	while((p != NULL) && strcmp(p->cpf, p->cpf) != 0){
+	while((p != NULL) && strcmp(p->cpf,cpf) != 0){
 		ant=p;
 		p=p->prox;
 		printf("\n\nentrou no while\n\n");
@@ -614,9 +682,9 @@ int validaTelefone(char *telefone){
 		}
 	return 0;
 	}
-	
+
 int validaSexo(char *sexo){
-	int a; 
+	int a;
 	for(a = 0; sexo[a] != '\0'; a++){
 		if((sexo[a] == 'M' || sexo[a] == 'm') || (sexo[a] == 'F' || sexo[a] == 'f'))
 			return 0;
@@ -627,16 +695,16 @@ int validaSexo(char *sexo){
 	}
 
 int validaIdade(char *idade){
-	int a; 
-	for(a = 0; idade[a] != '\0'; a++){ 
+	int a;
+	for(a = 0; idade[a] != '\0'; a++){
 		if(idade[a] >= 48 && idade[a] <= 57)
 			return 0;
-		else 
+		else
 			return 1;
 		}
 	return 0;
 	}
-	
+
 int validaData(char *nasc){
 		if(nasc[2] == 47 && nasc[5] == 47)
 			return 0;
@@ -653,45 +721,147 @@ int validaMedidas(char *medida){
 		else
 			return 1;
 		}
-		
+
 	return 0;
 	}
 
 int validaCPF(char *cpf){
 	int contador, soma, resultado, resultado2, valor;
-	int digito10, digito11; 
+	int digito10, digito11, tam;
 	soma = 0;
-	
+	tam = strlen(cpf);
+	if(tam < 11){
+		printf("\nDigite o CPF com 11 campos.\n");
+		return 1;
+		}
+	else{
 	for(contador = 0; contador < 11; contador++){
 		cpf[contador] -= 48;
 	}
-	
-	for(contador = 0; contador < 9; contador++){
+
+	for(contador = 0; contador < 9; contador++){ //VerificaÁ„o para primeiro digito
 		soma += cpf[contador] * (10 - contador);
-		}	
-		
+		}
+
 	resultado = soma % 11;
-	
-	if((resultado == 0) || (resultado == 1))
+
+	if(resultado == 0 || resultado == 1)
 		digito10 = 0;
-	else 
+	else
 		digito10 = 11 - resultado;
-	
+
 	soma = 0;
-	
-	for(contador = 0; contador < 10; contador++){
+
+	for(contador = 0; contador < 10; contador++){ //VerificaÁ„o para segundo digito
 		soma += cpf[contador] * (11 - contador);
 		}
 	valor = (soma / 11) * 11;
 	resultado2 = soma - valor;
-	if((resultado2 == 0) || (resultado2 == 1))
+	if(resultado2 == 0 || resultado2 == 1)
 		digito11 = 0;
-	else 
-		digito11 = 11 - resultado2;
-	if((digito10 == cpf[9]) && (digito11 == cpf[10]))
-		return 0;
 	else
+		digito11 = 11 - resultado2;
+
+	for(contador = 0; contador < 11; contador++){
+		cpf[contador] += 48;
+	}
+	if((digito10 == cpf[9]) && (digito11 == cpf[10]))
 		return 1;
+	else
+		return 0;
 	return 0;
 	}
+}
 
+int meses(void){
+    int escolha;
+    do{
+printf("\nInforme o mÍs referente ao pagamento !!\n");
+printf("| 1 - JANEIRO       |\n");
+printf("| 2 - FEVEREIRO     |\n");
+printf("| 3 - MAR«O         |\n");
+printf("| 4 - ABRIL         |\n");
+printf("| 5 - MAIO          |\n");
+printf("| 6 - JUNHO         |\n");
+printf("| 7 - JULHO         |\n");
+printf("| 8 - AGOSTO        |\n");
+printf("| 9 - SETEMBRO      |\n");
+printf("| 10 - OUTUBRO      |\n");
+printf("| 11 - NOVEMBRO     |\n");
+printf("| 12 - DEZEMBRO     |\n");
+scanf("%d",&escolha);
+}while(escolha>12&&escolha<1);
+
+
+
+
+
+}
+
+void pagar(Lista* Aluno){
+    Lista* p=Aluno;
+    if (p==NULL){
+        printf("n„o existe aluno cadastrado !!");
+        exit(1);
+    }
+    char cpf3[12];
+    printf("DIGITE O CPF DO ALUNO : ");
+    scanf(" %11[^\n]", cpf3);
+	for (p;p!=NULL;p=p->prox){
+	    printf("entrou no for");
+	    printf("p = %s",p->cpf);
+		if(strcmp(p->cpf, cpf3) == 0){
+			int mes_pag=meses();
+			if(mes_pag==1){
+                p->pago.janeiro=35.00;
+                printf(" MÍS DE JANEIRO PAGO !! \n");
+			}
+			else if (mes_pag==2){
+                p->pago.fevereiro=35.00;
+                printf(" MÍS DE FEVEREIRO PAGO !! \n");
+			}
+			else if (mes_pag==3){
+                p->pago.marco=35.00;
+                printf(" MÍS DE MAR«O PAGO !! \n");
+			}
+			else if (mes_pag==4){
+                p->pago.abri=35.00;
+                printf(" MÍS DE ABRIL PAGO !! \n");
+            }
+            else if (mes_pag==5){
+                p->pago.maio=35.00;
+                printf(" MÍS DE MAIO PAGO !! \n");
+            }
+            else if (mes_pag==6){
+                p->pago.jun=35.00;
+                printf(" MÍS DE JUNHO PAGO !! \n");
+            }
+            else if (mes_pag==7){
+                p->pago.jul=35.00;
+                printf(" MÍS DE JULHO PAGO !! \n");
+            }
+            else if (mes_pag==8){
+                p->pago.ago=35.00;
+                printf(" MÍS DE AGOSTO PAGO !! \n");
+            }
+            else if (mes_pag==9){
+                p->pago.set=35.00;
+                printf(" MÍS DE SETEMBRO PAGO !! \n");
+            }
+            else if (mes_pag==10){
+                p->pago.out=35.00;
+                printf(" MÍS DE OUTUBRO PAGO !! \n");
+            }
+            else if (mes_pag==11){
+                p->pago.nov=35.00;
+                printf(" MÍS DE NOVEMBRO PAGO !! \n");
+            }
+            else if (mes_pag==2){
+                p->pago.dez=35.00;
+                printf(" MÍS DE DEZEMBRO PAGO !! \n");
+            }
+		}
+		else
+            printf("CPF N√O ENCONTRADO");
+	}
+}
