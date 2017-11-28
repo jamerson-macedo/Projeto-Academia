@@ -3,7 +3,20 @@
 #include <string.h>
 #include <stdlib.h>
 #include <conio.h>
-// STRUCT
+typedef struct despesas{
+	float janeiro;
+	float fevereiro;
+	float marco;
+	float abri;
+	float maio;
+	float jun;
+	float jul;
+	float ago;
+	float set;
+	float out;
+	float nov;
+	float dez;
+}Despesas;// STRUCT
 typedef struct pagamentos{
 	float janeiro;
 	float fevereiro;
@@ -36,6 +49,7 @@ typedef struct lista{
 	char cidade [80];
 	char email[30];
 	char data[11];
+	int ativo;
 Medidas medidas;
 Pagamentos pago;
 struct lista* prox;
@@ -67,13 +81,17 @@ int validaCPF(char *cpf);
 int meses(void);
 void pagar(Lista* Aluno);
 void desenvolvimentoAluno(Lista* Aluno);
-void despesas(Lista* Aluno);
+void despesas(Despesas);
+void desativar(Lista* aluno);
+void mostrar_aluno(Lista* aluno);
+void relatorios (Lista* aluno);
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
 
 int main(void){
 	setlocale(LC_ALL, "portuguese");
 
     Lista* Aluno=criarLista();
+    Despesas DESPESAS;
 
     int opc;
     int opc2;
@@ -139,8 +157,20 @@ int main(void){
             break;
         }
         else if (opc2==2){
-            despesas(Aluno);
-
+            despesas(DESPESAS);
+            break;
+        }
+        else if (opc2==3){
+            mostrar_aluno(Aluno);
+            break;
+        }
+        else if (opc2==4){
+            relatorios(Aluno);
+            break;
+        }
+        else if (opc2==6){
+            desativar(Aluno);
+            break;
         }
     case 5:
         system("cls");
@@ -635,12 +665,13 @@ int financeiro(void){
 	printf("                #   3 - ALUNOS ATIVOS             #\n");
 	printf("                #   4 - RELATORIOS                #\n");
 	printf("                #   5 - ALUNOS EM ATRASO          #\n");
+	printf("                #   6 - DESATIVAR ALUNO           #\n");
 	printf("                #   0 - SAIR                      #\n");
 	printf("                -----------------------------------\n");
 	printf("\n");
 	printf(">>> Escolha sua opção: ");
 	scanf("%d", &escolha);
-    }while(escolha>5);
+    }while(escolha>6);
     return escolha;
 }
 
@@ -661,6 +692,7 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 	strcpy(novo->cidade, cidade);
 	strcpy(novo->email,email);
 	strcpy(novo->data, data);
+	novo->ativo=1;
 	novo->prox=NULL;
 
 	// Lista vazia ?
@@ -867,7 +899,7 @@ printf("| 12 - DEZEMBRO     |\n");
 scanf("%d",&escolha);
 }while(escolha>12&&escolha<1);
 
-
+return escolha;
 
 
 
@@ -932,7 +964,7 @@ void pagar(Lista* Aluno){
                 p->pago.nov=35.00;
                 printf(" MêS DE NOVEMBRO PAGO !! \n");
             }
-            else if (mes_pag==2){
+            else if (mes_pag==12){
                 p->pago.dez=35.00;
                 printf(" MêS DE DEZEMBRO PAGO !! \n");
             }
@@ -942,8 +974,8 @@ void pagar(Lista* Aluno){
 	}
 }
 }
-void despesas(Lista* Aluno){
-    Lista* p;
+
+void despesas(Despesas d){
     float luz;
     float agua;
     float funcionarios;
@@ -960,59 +992,200 @@ printf("Quanto gastou com Manutenção ? \n");
 scanf("%f",&manutencao);
 total=luz+agua+funcionarios+manutencao;
 printf(" QUAL O MES DESEJA CONTABILIZAR AS DESPESAS ?");
-int mes_pag=0;
-mes_pag=meses();
+
+int mes_pag=meses();
+printf("pag %d",mes_pag);
 
 			if(mes_pag==1){
-                p->pago.janeiro=total;
+        d.janeiro=total;
                 printf(" MêS DE JANEIRO CONTABILIZADO\n");
 			}
 			else if (mes_pag==2){
-                p->pago.fevereiro=total;
+                d.fevereiro=total;
                 printf(" MêS DE FEVEREIRO CONTABILIZADO!! \n");
 			}
 			else if (mes_pag==3){
-                p->pago.marco=total;
+                d.marco=total;
                 printf(" MêS DE MARÇO CONTABILIZADO !! \n");
 			}
 			else if (mes_pag==4){
-                p->pago.abri=total;
+                d.abri=total;
                 printf(" MêS DE ABRIL CONTABILIZADO !! \n");
             }
             else if (mes_pag==5){
-                p->pago.maio=total;
+                d.maio=total;
                 printf(" MêS DE MAIO CONTABILIZADO !! \n");
             }
             else if (mes_pag==6){
-                p->pago.jun=total;
+                d.jun=total;
                 printf(" MêS DE JUNHO CONTABILIZADO !! \n");
             }
             else if (mes_pag==7){
-                p->pago.jul=total;
+                d.jul=total;
                 printf(" MêS DE JULHO CONTABILIZADO !! \n");
             }
             else if (mes_pag==8){
-                p->pago.ago=total;
+                d.ago=total;
                 printf(" MêS DE AGOSTO CONTABILIZADO !! \n");
             }
             else if (mes_pag==9){
-                p->pago.set=total;
+                d.set=total;
                 printf(" MêS DE SETEMBRO CONTABILIZADO !! \n");
             }
             else if (mes_pag==10){
-                p->pago.out=total;
+                d.out=total;
                 printf(" MêS DE OUTUBRO CONTABILIZADO !! \n");
             }
             else if (mes_pag==11){
-                p->pago.nov=total;
+                d.nov=total;
                 printf(" MêS DE NOVEMBRO CONTABILIZADO !! \n");
             }
             else if (mes_pag==2){
-                p->pago.dez=total;
+                d.dez=total;
                 printf(" MêS DE DEZEMBRO CONTABILIZADO !! \n");
 
 
 }
 
+}
+
+void desativar(Lista* aluno){
+Lista* p=aluno;
+    if (p==NULL){
+        printf("\n\nnão existe aluno cadastrado !!\n\n");
+        system("pause");
+    }
+    else{
+    char cpf3[12];
+    printf("DIGITE O CPF DO ALUNO : ");
+    scanf(" %11[^\n]", cpf3);
+	for (p;p!=NULL;p=p->prox){
+		if(strcmp(p->cpf, cpf3) == 0){
+            p->ativo=0;
+		}
+
+
+
+        }
+    }
+}
+
+void mostrar_aluno(Lista* aluno){
+Lista* p=aluno;
+    if (p==NULL){
+        printf("\n\nnão existe aluno cadastrado !!\n\n");
+        system("pause");
+    }
+    else{
+	for (p;p!=NULL;p=p->prox){
+		if(p->ativo==1){
+            printf("ALUNOS ATIVOS ! ");
+            printf("%s\n",p->nome);
+		}
+
+
+
+	}
+    }
+
+
+}
+
+
+
+void relatorios (Lista* aluno){
+Lista* p=aluno;
+    if (p==NULL){
+        printf("\n\nNão existe aluno cadastrado!!\n\n");
+        system("pause");
+    }
+    else{
+        float recebeu;
+	for (p;p!=NULL;p=p->prox){
+        printf("informe um mes que deseja consultar receita : ");
+        int mes_pag=meses();
+        if(mes_pag==1){
+            recebeu=p->pago.janeiro;
+                printf(" Saldo no mes de janeiro %.2f\n",recebeu);
+			}
+			else if (mes_pag==2){
+                recebeu=p->pago.fevereiro;
+                printf(" saldo do mes de fevereiro %.2f\n",recebeu);
+			}
+			else if (mes_pag==3){
+                recebeu=p->pago.marco;
+                printf(" Saldo no mes de março %.2f\n",recebeu);
+			}
+			else if (mes_pag==4){
+                recebeu=p->pago.abri;
+                printf(" Saldo no mes de abril %.2f\n",recebeu);
+            }
+            else if (mes_pag==5){
+                recebeu=p->pago.maio;
+                printf(" Saldo no mes de maio %.2f\n",recebeu);
+            }
+            else if (mes_pag==6){
+                recebeu=p->pago.jul;
+                printf(" Saldo no mes de junho %.2f\n",recebeu);
+            }
+            else if (mes_pag==7){
+               recebeu=p->pago.jul;
+                printf(" Saldo no mes de julho %.2f\n",recebeu);
+            }
+            else if (mes_pag==8){
+                recebeu=p->pago.ago;
+                printf(" Saldo no mes de Agosto %.2f\n",recebeu);
+            }
+            else if (mes_pag==9){
+                recebeu=p->pago.set;
+                printf(" Saldo no mes de setembro %.2f\n",recebeu);
+            }
+            else if (mes_pag==10){
+                recebeu=p->pago.out;
+                printf(" Saldo no mes de outubro %.2f\n",recebeu);
+            }
+            else if (mes_pag==11){
+                recebeu=p->pago.nov;
+                printf(" Saldo no mes de Novembro %.2f\n",recebeu);
+            }
+            else if (mes_pag==12){
+                recebeu=p->pago.dez;
+                printf(" Saldo no mes de dezembro %.2f\n",recebeu);
+
+
+            }
+
+
+	}
+    }
+}
+
+void alunos_atrasos(Lista* aluno){
+Lista* p=aluno;
+if (p==NULL){
+        printf("\n\nNão existe aluno cadastrado!!\n\n");
+        system("pause");
+    }
+    else{
+
+	for (p;p!=NULL;p=p->prox){
+        printf("informe um mes que deseja consultar receita : ");
+        int mes_pag=meses();
+        if(mes_pag==1){
+
+        }
+
+
+
+
+
+
+
+
+
+
+}
+
+    }
 }
 
