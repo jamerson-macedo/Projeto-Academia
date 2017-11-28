@@ -21,7 +21,6 @@ typedef struct pagamentos{
 
 typedef struct medidas{
 	char biceps[5];
-	char triceps[5];
 	char peito[5];
 	char coxa[5];
 	char kg[5];
@@ -68,6 +67,7 @@ int validaCPF(char *cpf);
 int meses(void);
 void pagar(Lista* Aluno);
 void desenvolvimentoAluno(Lista* Aluno);
+void despesas(Lista* Aluno);
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
 
 int main(void){
@@ -133,11 +133,14 @@ int main(void){
     case 4:
         system("cls");
         opc2=financeiro();
-        printf("%d",opc2);
 
         if (opc2==1){
             pagar(Aluno);
             break;
+        }
+        else if (opc2==2){
+            despesas(Aluno);
+
         }
     case 5:
         system("cls");
@@ -290,9 +293,10 @@ Lista* Dadospessoais(Lista* Aluno){
 Lista* inserir_Medidas(Lista* Aluno){
     char cpf1[12];
     if(Aluno==NULL){
-            printf("\nNÃO EXISTE ALUNO CADASTRADO. ");
-            exit(1);
+            printf("\n\nNÃO EXISTE ALUNO CADASTRADO. \n\n");
+            system("pause");
     }
+    else{
     printf("\n\n~~ MEDIDAS~~\n\n");
     printf("DIGITE O CPF PARA INSERIR AS MEDIDAS: ");
     scanf(" %11[^\n]", cpf1);
@@ -324,16 +328,6 @@ Lista* inserir_Medidas(Lista* Aluno){
 			scanf(" %4[^\n]", p->medidas.biceps);
 			fflush(stdin);
 			val2 = validaMedidas(p->medidas.biceps);
-			}
-
-		printf("\nInforme o triceps: ");
-		scanf(" %4[^\n]", p->medidas.triceps);
-		int val3 = validaMedidas(p->medidas.triceps);
-		while(val3 == 1){
-			printf("\nInforme o triceps: ");
-			scanf(" %4[^\n]", p->medidas.triceps);
-			fflush(stdin);
-			val3 = validaMedidas(p->medidas.triceps);
 			}
 
 		printf("\nInforme o peitoral: ");
@@ -372,9 +366,14 @@ Lista* inserir_Medidas(Lista* Aluno){
 		}
 	return Aluno;
 }
-
+}
 void Atualizar_dados(Lista* Aluno, char *cpf){
 	Lista* p;
+	if (p==NULL){
+            printf("\n\nNÃO EXISTE ALUNO CADASTRADO !\n\n");
+        system("pause");
+	}
+	else{
 	for (p=Aluno;p!=NULL;p=p->prox){
 		if(strcmp(p->cpf, cpf) == 0){
 			printf("\n\n ~~ATUALIZAR CADASTRO~~\n\n");
@@ -465,13 +464,14 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
             }
         }
 }
-
+}
 void imprimir_dados(Lista *Aluno){
 	Lista* p=Aluno;
-	int cont=0;
 	if (p==NULL){
-			printf("vazio");
+			printf("\n\nBANCO DE DADOS VAZIO !\n\n");
+			system("pause");
 			}
+    else {
 	for (p=Aluno;p!=NULL;p=p->prox){
 		printf("\nNome do Usuario: %s", p->nome);
 		printf("\nSexo: %s", p->sexo);
@@ -482,17 +482,17 @@ void imprimir_dados(Lista *Aluno){
 		printf("\nE-MAIL: %s", p->email);
 		printf("\nData de Nascimento: %s", p->data);
 		printf("\n");
-		cont++;
 	}
-	printf("\n%d\n",cont);
+}
 }
 
 void Saude_Aluno(Lista* Aluno){
     char cpf2[12];
     if(Aluno==NULL){
         printf("\nNÃO EXISTE ALUNO CADASTRADO\n");
-        exit(0);
+        system("pause");
     }
+    else{
     float imc=0;
 	printf("\n\nSAUÚDE DO ALUNO\n\n");
 	printf("\nInforme o CPF do Aluno: ");
@@ -506,44 +506,123 @@ void Saude_Aluno(Lista* Aluno){
     Lista* p;
 	for (p=Aluno;p!=NULL;p=p->prox){
 		if(strcmp(p->cpf, cpf2)==0){
-        printf("aluno encontrado !");
         float altura=atof(p->medidas.alt);
         float pesoc=atof(p->medidas.kg);
+        printf("altura %f peso %f",altura,pesoc);
         imc=pesoc/(altura*altura);
         printf("\n%f\n",imc);
-        if (imc<=16.9){
-            printf("%s, Você esta abaixo do peso ideal, com um IMC de %f.\n, Muito abaixo do peso,\n Recomenda-se que você procure se alimentar mais frequentemente\n",p->nome,imc);
+        if (imc<17.0){
+            printf("%s , Você esta abaixo do peso ideal, com um IMC de %.2f.\n, MUITO ABAIXO DO PESO.\n",p->nome,imc);
 
         }
         else if (imc>17.0&&imc<18.4){
-            printf("%s, voce esta abaixo do peso ideal, com um IMC de %f.\n Abaixo do peso,\n ",p->nome,imc);
+            printf("%s , voce esta abaixo do peso ideal, com um IMC de %.2f.\n ABAIXO DO PESO.\n ",p->nome,imc);
         }
         else if (imc>=18.5 && imc <=24.9){
-            printf("peso normal");
+            printf("%s , Você esta com o peso ideal, IMC de %.2f.\n ",p->nome,imc);
+        }
+        else if (imc>=25.0&& imc<=29.99){
+            printf("%s , Você esta acima do peso, ccm IMC de %.2f. \n",p->nome,imc);
+        }
+        else if (imc>=30.0 && imc<34.99){
+            printf("%s , você esta OBESO, com um IMC de %.2f.\n",p->nome,imc);
+        }
+        else if(imc>=35.0&& imc <=39.99){
+            printf("%s , voce esta com uma obesidade SEVERA, com um IMC de %.2f. \n",p->nome,imc);
+        }
+        else if(imc>40.0){
+            printf("%s , voce esta com uma obesidade MÓRBIDA, com um IMC de %.2f.\n",p->nome,imc);
         }
     }
     else
         printf("CPF NÃO ENCONTRADO");
+    }
 }
 }
 
 void desenvolvimentoAluno(Lista* Aluno){
 	printf("DESENVOLVIMENTO DE ALUNO!\n");
+	float nova_altura,novo_peso,novo_peito,nova_coxa,novo_biceps,resAlt,resPeso,resPeito,resBraco,resCoxs;
 	Lista* p=Aluno;
     if (p==NULL){
-        printf("não existe aluno cadastrado !!");
-        exit(1);
+        printf("\n\nNÃO EXISTE ALUNO CADASTRADO !!\n\n");
+        system("pause");
     }
+    else
+    {
     char cpf3[12];
     printf("DIGITE O CPF DO ALUNO : ");
     scanf(" %11[^\n]", cpf3);
+    // CONVERTER
+    float altura=atof(p->medidas.alt);
+    float biceps=atof(p->medidas.biceps);
+    float coxa=atof(p->medidas.coxa);
+    float peito=atof(p->medidas.peito);
+    float kg=atof(p->medidas.kg);
 	for (p;p!=NULL;p=p->prox){
 		if(strcmp(p->cpf, cpf3) == 0){
+		    printf("\nAVISO !!\n");
+            printf("\nESSE PROCEDIMENTO DEVE SER FEITO APÓS 3 MESES DE TREINO !! \n");
+            printf("\n\nInforme sua atual altura : \n\n");
+            scanf("%f",&nova_altura);
+            if(nova_altura>altura){
+                resAlt=nova_altura-altura;
+                printf("Voce aumentou %.2f cm.\n",resAlt);
+            }
+            else if(nova_altura<altura){
+                resPeso=nova_altura-altura;
+                printf("Voce diminuiu %.2f cm.\n",resPeso);
+            }
+            else if (nova_altura==altura){
+                printf("Não obteve resultados ! ");
+            }
+            printf("\n\nInforme o peitoral : \n\n");
+            scanf("%f",&novo_peito);
+            if (novo_peito>peito){
+                resPeito=novo_peito-peito;
+                printf(" Voce aumentou %.2f cm.",resPeito);
+            }
+            else if (novo_peito<peito){
+                resPeito=novo_peito-peito;
+                printf("Voce diminuiu %.2f cm.",resPeito);
+            }
+            else if (novo_peito==peito){
+                printf("Não obteve resultados ! ");
 
+            }
+            printf("\n\nInforme o biceps : \n\n");
+            scanf("%f",&novo_biceps);
+            if (novo_biceps>biceps){
+                resBraco=novo_biceps-biceps;
+                printf("Você aumentou %.2f cm.",resBraco);
+            }
+            else if (novo_biceps<biceps){
+                resBraco=novo_biceps-biceps;
+                printf(" voce diminuiu %.2f cm",resBraco);
+            }
+            else if (novo_biceps==biceps){
+                printf(" Não obteve resultados ! ");
 
+            }
+            printf("\n\nInforme o biceps : \n\n");
+            scanf("%f",&nova_coxa);
 
+            if (nova_coxa>coxa){
+                resCoxs=nova_coxa-coxa;
+                printf("Você aumentou %.2f cm.",resCoxs);
+            }
+            else if (nova_coxa<coxa){
+                resCoxs=nova_coxa-coxa;
+                printf("Você diminuiu %.2f cm.",resCoxs);
+            }
+            else if (nova_coxa==coxa){
+                     printf(" Não obteve resultados ! ");
+            }
         }
+        else
+            printf(" CPF NÃO ENCONTRADO !!");
     }
+}
 }
 
 int financeiro(void){
@@ -587,7 +666,6 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 	// Lista vazia ?
 
 	if (p==NULL){
-        printf("chegou em novo ");
         // guarda o novo
 		return novo;
 	}
@@ -600,14 +678,12 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 		// nao entendi
 	if (ant==NULL){
 	   novo->prox=p;
-	   printf("chegou em novo2");
 	   return novo;
 		}
 	// novo prox aponta para ant que aponta para o proximo
 	// entao o anterior agora aponta para novo
 	novo->prox=ant->prox;
 	ant->prox=novo;
-	printf("chegou em aluno");
 	return aluno;
 }
 
@@ -654,7 +730,6 @@ void salvar(Lista* Aluno){
         fprintf(s, "%s\n", salva->medidas.coxa);
 		fprintf(s, "%s\n", salva->medidas.kg);
 		fprintf(s, "%s\n", salva->medidas.peito);
-		fprintf(s, "%s\n", salva->medidas.triceps);
 		fprintf(s, "%s\n", salva->email);
 
 		}
@@ -801,9 +876,10 @@ scanf("%d",&escolha);
 void pagar(Lista* Aluno){
     Lista* p=Aluno;
     if (p==NULL){
-        printf("não existe aluno cadastrado !!");
-        exit(1);
+        printf("\n\nnão existe aluno cadastrado !!\n\n");
+        system("pause");
     }
+    else{
     char cpf3[12];
     printf("DIGITE O CPF DO ALUNO : ");
     scanf(" %11[^\n]", cpf3);
@@ -865,3 +941,78 @@ void pagar(Lista* Aluno){
             printf("CPF NÃO ENCONTRADO");
 	}
 }
+}
+void despesas(Lista* Aluno){
+    Lista* p;
+    float luz;
+    float agua;
+    float funcionarios;
+    float manutencao;
+    float total;
+printf("\n\nINFORME AS DESPESAS DA ACADEMIA \n\n");
+printf("Quanto gastou com luz ? \n");
+scanf("%f",&luz);
+printf("Quanto gastou com agua ? \n");
+scanf("%f",&agua);
+printf("Quanto gastou com funcionarios ? \n");
+scanf("%f",&funcionarios);
+printf("Quanto gastou com Manutenção ? \n");
+scanf("%f",&manutencao);
+total=luz+agua+funcionarios+manutencao;
+printf(" QUAL O MES DESEJA CONTABILIZAR AS DESPESAS ?");
+int mes_pag=0;
+mes_pag=meses();
+
+			if(mes_pag==1){
+                p->pago.janeiro=total;
+                printf(" MêS DE JANEIRO CONTABILIZADO\n");
+			}
+			else if (mes_pag==2){
+                p->pago.fevereiro=total;
+                printf(" MêS DE FEVEREIRO CONTABILIZADO!! \n");
+			}
+			else if (mes_pag==3){
+                p->pago.marco=total;
+                printf(" MêS DE MARÇO CONTABILIZADO !! \n");
+			}
+			else if (mes_pag==4){
+                p->pago.abri=total;
+                printf(" MêS DE ABRIL CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==5){
+                p->pago.maio=total;
+                printf(" MêS DE MAIO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==6){
+                p->pago.jun=total;
+                printf(" MêS DE JUNHO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==7){
+                p->pago.jul=total;
+                printf(" MêS DE JULHO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==8){
+                p->pago.ago=total;
+                printf(" MêS DE AGOSTO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==9){
+                p->pago.set=total;
+                printf(" MêS DE SETEMBRO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==10){
+                p->pago.out=total;
+                printf(" MêS DE OUTUBRO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==11){
+                p->pago.nov=total;
+                printf(" MêS DE NOVEMBRO CONTABILIZADO !! \n");
+            }
+            else if (mes_pag==2){
+                p->pago.dez=total;
+                printf(" MêS DE DEZEMBRO CONTABILIZADO !! \n");
+
+
+}
+
+}
+
