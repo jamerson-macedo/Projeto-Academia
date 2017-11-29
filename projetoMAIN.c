@@ -85,6 +85,7 @@ void despesas(Despesas);
 void desativar(Lista* aluno);
 void mostrar_aluno(Lista* aluno);
 void relatorios (Lista* aluno);
+void alunos_atrasos(Lista* aluno);
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
 
 int main(void){
@@ -166,6 +167,10 @@ int main(void){
         }
         else if (opc2==4){
             relatorios(Aluno);
+            break;
+        }
+        else if (opc2==5){
+            alunos_atrasos(Aluno);
             break;
         }
         else if (opc2==6){
@@ -634,7 +639,7 @@ void desenvolvimentoAluno(Lista* Aluno){
                 printf(" Não obteve resultados ! ");
 
             }
-            printf("\n\nInforme o biceps : \n\n");
+            printf("\n\nInforme as medidas da perna : \n\n");
             scanf("%f",&nova_coxa);
 
             if (nova_coxa>coxa){
@@ -1062,6 +1067,7 @@ Lista* p=aluno;
 	for (p;p!=NULL;p=p->prox){
 		if(strcmp(p->cpf, cpf3) == 0){
             p->ativo=0;
+            printf(" O aluno %s , desativado do sistema com sucesso !! ",p->nome);
 		}
 
 
@@ -1082,9 +1088,8 @@ Lista* p=aluno;
             printf("ALUNOS ATIVOS ! ");
             printf("%s\n",p->nome);
 		}
-
-
-
+		else
+            printf(" não existe aluno cadastrado ");
 	}
     }
 
@@ -1168,12 +1173,45 @@ if (p==NULL){
     }
     else{
 
-	for (p;p!=NULL;p=p->prox){
-        printf("informe um mes que deseja consultar receita : ");
-        int mes_pag=meses();
-        if(mes_pag==1){
+	for (p=aluno;p!=NULL;p=p->prox){
+	    printf("%s esta devendo ...\n",p->nome);
+            if(p->pago.janeiro==0){
+                printf("janeiro \n");
+			}
+			if (p->pago.fevereiro==0){
+                printf("Fevereiro \n");
+			}
+			 if (p->pago.marco==0){
+                printf(" março \n");
+			}
+			 if (p->pago.abri==0){
+                printf("abril \n");
+            }
+             if (p->pago.maio==0){
+                printf("maio \n");
+            }
+             if (p->pago.jun==0){
+                printf("junho \n");
+            }
+             if (p->pago.jul==0){
+               printf("julho \n");
+            }
+             if (p->pago.ago==0){
+                printf("Agosto \n");
+            }
+             if (p->pago.set==0){
+                printf(" setembro \n");
+            }
+             if (p->pago.out==0){
+                printf("outubro\n");
+            }
+             if (p->pago.nov==0){
 
-        }
+                printf(" Novembro \n");
+            }
+             if (p->pago.dez==0){
+                printf(" dezembro \n");
+
 
 
 
@@ -1188,4 +1226,4 @@ if (p==NULL){
 
     }
 }
-
+}
