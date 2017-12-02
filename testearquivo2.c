@@ -250,7 +250,7 @@ Lista* Dadospessoais(Lista* Aluno){
 	printf("CADASTRO DE ALUNO!\n");
 
 	FILE *dadosPessoais;
-	dadosPessoais=fopen("fileDadosPessoais.txt", "w+");
+	dadosPessoais=fopen("fileDadosPessoais.txt", "a");
 
 	Lista *novo=malloc(sizeof(Lista));
 
@@ -347,7 +347,7 @@ Lista* Dadospessoais(Lista* Aluno){
 Lista* inserir_Medidas(Lista* Aluno){
 
 	FILE* medicao;
-	medicao = fopen("fileMedidas.txt", "w+");
+	medicao = fopen("fileMedidas.txt", "a");
 
 	Lista* x=Aluno;
 
@@ -436,7 +436,7 @@ Lista* inserir_Medidas(Lista* Aluno){
 void Atualizar_dados(Lista* Aluno, char *cpf){
 
 	FILE* atualiza;
-	atualiza = fopen("fileDadosPessoais.txt", "w+");
+	atualiza = fopen("fileDadosPessoais.txt", "a");
 
 	Lista* p=Aluno;
 	if (p==NULL){
