@@ -1363,11 +1363,11 @@ Lista* ler_arquivos(Lista* Aluno){
 	char cidade[81];
 	char email[30];
 	char data[12];
-    if(ler_ == NULL){
-        printf("Há um erro ao abrir este arquivo!\n");
-        exit(1);
-	}
-	else{
+    //if(ler_ == NULL){
+    //    printf("Há um erro ao abrir este arquivo!\n");
+    //	  exit(1);
+	//}
+	//else{
 	while(fscanf(ler_, "%80[^|]|%1[^|]|%11[^|]|%2[^|]|%19[^|]|%80[^|]|%29[^|]|%11[^|]|",  nome, sexo, cpf, idade, celular, cidade, email, data) != EOF){
 
 		Lista* salvar=(Lista*)malloc(sizeof(Lista));
@@ -1385,7 +1385,7 @@ Lista* ler_arquivos(Lista* Aluno){
 
 		Aluno = salvar;
         }
-	}
+	//}
 	fclose(ler_);
 	return Aluno;
 }
@@ -1400,11 +1400,11 @@ Lista* ler_medidas(Lista* Aluno){
     char coxa[5];
     char kg[5];
     char alt[5];
-	if(ler__ == NULL){
+	/*if(ler__ == NULL){
         printf("Há um erro ao abrir este arquivo!\n");
         exit(1);
 	}
-	else{
+	else{*/
         while(fscanf(ler__, "%4[^|]|%4[^|]|%4[^|]|%4[^|]|%4[^|]|",  x->medidas.biceps, x->medidas.peito, x->medidas.coxa, x->medidas.kg, x->medidas.alt) !=  EOF){
             Lista* salvar_medidas = (Lista*) malloc(sizeof(Lista));
 
@@ -1417,7 +1417,7 @@ Lista* ler_medidas(Lista* Aluno){
             salvar_medidas->prox = Aluno;
             Aluno = salvar_medidas;
 		}
-	}
+	//}
     fclose(ler__);
 	return Aluno;
 }
