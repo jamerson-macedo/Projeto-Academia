@@ -1447,12 +1447,12 @@ Lista* carregar(Lista* Aluno) {
 	char coxa[4];
 	char kg[4];
 	char peito[4];
+	file = fopen("teste.txt", "r");
     if (file == NULL) {
         printf("Erro, não foi possivel abrir o arquivo\n");
     } else {
-        while (fscanf(file, "%80[^|]|%2[^|]|%11[^|]|%2[^|]|%19[^|]|%80[^|]|29[^|]|%11[^|]|%3[^|]|%3[^|]|%3[^|]|%3[^|]|%3[^|]|\n", nome,sexo,cpf,idade,celular,cidade,email,data,alt,biceps,coxa,kg,peito) != EOF) {
+        while (fscanf(file, "%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|\n", nome,sexo,cpf,idade,celular,cidade,email,data,alt,biceps,coxa,kg,peito) != EOF) {
             Lista* nova = (Lista*) malloc(sizeof(Lista));
-
    //         if (nome[0] >= 33) {
                 strcpy(nova->nome, nome);
                 strcpy(nova->sexo, sexo);
@@ -1477,7 +1477,7 @@ Lista* carregar(Lista* Aluno) {
 }
 
 void salvartudo(Lista* Aluno) {
-    FILE *file = fopen("teste.txt", "w+");
+    FILE *file = fopen("teste.txt", "w");
     if (file == NULL) {
         printf("Houve um erro ao abrir o arquivo.\n");
         exit(1);
