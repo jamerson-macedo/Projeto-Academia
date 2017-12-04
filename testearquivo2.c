@@ -91,8 +91,8 @@ void relatorios (Lista* aluno);
 void alunos_atrasos(Lista* aluno);
 int validaNumero(char desp[5]);
 Lista* ler_arquivos(Lista* Aluno);
-Lista* ler_medidas(Lista* Aluno);
-
+void salvar(Lista* l);
+void total_despesas(Despesas d);
 
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
 
@@ -101,11 +101,8 @@ int main(void){
 
     Lista* Aluno=criarLista();
 
-    Aluno = ler_arquivos(Aluno);
 
     Despesas DESPESAS;
-
-	Aluno = ler_medidas(Aluno);
 
     int opc;
     int opc2;
@@ -157,9 +154,11 @@ int main(void){
 
         break;
     case 2:
+        system("cls");
         Saude_Aluno(Aluno);
         break;
     case 3:
+        system("cls");
         desenvolvimentoAluno(Aluno);
         break;
     case 4:
@@ -167,33 +166,46 @@ int main(void){
         opc2=financeiro();
 
         if (opc2==1){
+            system("cls");
             pagar(Aluno);
             break;
         }
         else if (opc2==2){
+            system("cls");
             despesas(DESPESAS);
             break;
         }
         else if (opc2==3){
+            system("cls");
             mostrar_aluno(Aluno);
             break;
         }
         else if (opc2==4){
+            system("cls");
             relatorios(Aluno);
             break;
         }
         else if (opc2==5){
+            system("cls");
             alunos_atrasos(Aluno);
             break;
         }
         else if (opc2==6){
+            system("cls");
             desativar(Aluno);
             break;
-        }
+            }
+
+
     case 5:
-        system("cls");
         imprimir_dados(Aluno);
+        break;
+    case 6:
+        Aluno = ler_arquivos(Aluno);
+        break;
     case 0:
+
+        salvar(Aluno);
         exit(0);
     default:
         printf("\nValor inválido.");
@@ -217,8 +229,9 @@ int menuPrincipal(void){
 	printf("                #   3 - DESENVOLVIMENTO DE ALUNO  #\n");
 	printf("                #   4 - FINANCEIRO                #\n");
 	printf("                #   5 - IMPRIMIR                  #\n");
+	printf("                #   6 - CARREGAR DADOS            #\n");
 	printf("                #                                 #\n");
-	printf("                #   0 - SAIR                      #\n");
+	printf("                #   0 - SAIR E SALVAR             #\n");
 	printf("                -----------------------------------\n");
 	printf("\n");
 	printf(">>> Escolha sua opção: ");
@@ -248,9 +261,6 @@ int menuAluno(void){
 
 Lista* Dadospessoais(Lista* Aluno){
 	printf("CADASTRO DE ALUNO!\n");
-
-	FILE *dadosPessoais;
-	dadosPessoais=fopen("fileDadosPessoais.txt", "a");
 
 	Lista *novo=malloc(sizeof(Lista));
 
@@ -338,16 +348,10 @@ Lista* Dadospessoais(Lista* Aluno){
 	printf("\n\nCADASTRO CONCLUÍDO! \n\n");
 	Aluno=inserir_dados(Aluno,novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data);
 
-	fprintf(dadosPessoais, "%s|%s|%s|%s|%s|%s|%s|%s\n", novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data);
-	fclose(dadosPessoais);
-
 	return Aluno;
 	}
 
 Lista* inserir_Medidas(Lista* Aluno){
-
-	FILE* medicao;
-	medicao = fopen("fileMedidas.txt", "a");
 
 	Lista* x=Aluno;
 
@@ -421,22 +425,13 @@ Lista* inserir_Medidas(Lista* Aluno){
 				}
 
 				printf("\n\n MEDIDAS REGISTRADAS COM SUCESSO !!\n\n");
-				fprintf(medicao, "%s|%s|%s|%s|%s\n", x->medidas.kg, x->medidas.biceps, x->medidas.peito, x->medidas.coxa,  x->medidas.alt);
-				fclose(medicao);
-				break;
 				}
-			else{
-				printf("\n\nCPF NÃO ENCONTRADO\n\n");
-			}
 		}
 	}
 	return Aluno;
 }
 
 void Atualizar_dados(Lista* Aluno, char *cpf){
-
-	FILE* atualiza;
-	atualiza = fopen("fileDadosPessoais.txt", "a");
 
 	Lista* p=Aluno;
 	if (p==NULL){
@@ -467,16 +462,6 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				scanf(" %1[^\n]", p->sexo);
 				fflush(stdin);
 				val2 = validaSexo(p->sexo);
-				}
-
-			printf("\nInforme seu CPF: ");
-			scanf(" %12[^\n]", p->cpf);
-			fflush(stdin);
-			int val3 = validaCPF(p->cpf);
-			while(val3 == 1){
-				printf("\nDigite o CPF sem pontos e tracos: ");
-				scanf(" %12[^\n]", p->cpf);
-				val3 = validaCPF(p->cpf);
 				}
 
 
@@ -530,9 +515,6 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				val8 = validaData(p->data);
 				}
 				printf("\n\n ATUALIZADO COM SUCESSO\n\n");
-
-			fprintf(atualiza, "%s|%s|%s|%s|%s|%s|%s|%s|", p->nome, p->sexo, p->cpf,p->idade, p->celular, p->cidade, p->email, p->data);
-			fclose(atualiza);
             }
         }
 	}
@@ -584,13 +566,10 @@ void Saude_Aluno(Lista* Aluno){
 			}
 
 		for (p=Aluno;p!=NULL;p=p->prox){
-
 			if(strcmp(p->cpf, cpf2)==0){
 				float altura=atof(p->medidas.alt);
 				float pesoc=atof(p->medidas.kg);
-				printf("\nAltura %.2f\t|\tPeso %.2f\n",altura,pesoc);
 				imc=pesoc/(altura*altura);
-				printf("\n\t%.2f = \n",imc);
 				if (imc<17.0){
 					printf("\n%s, você esta muito abaixo do peso ideal, com um IMC de %.2f.\n",p->nome,imc);
 				}
@@ -614,9 +593,8 @@ void Saude_Aluno(Lista* Aluno){
 				}
 				break;
 			}
-			else{
-				printf("CPF NÃO ENCONTRADO");
-			}
+
+
 		}
 	}
 }
@@ -743,9 +721,7 @@ void desenvolvimentoAluno(Lista* Aluno){
                      printf(" Não obteve resultados ! ");
             }
         }
-        else{
-            printf(" CPF NÃO ENCONTRADO !!");
-		}
+
 		}
 	}
 }
@@ -766,7 +742,7 @@ int financeiro(void){
 	printf("\n");
 	printf(">>> Escolha sua opção: ");
 	scanf("%d", &escolha);
-    }while(escolha>6);
+    }while(escolha>7);
     return escolha;
 }
 
@@ -909,7 +885,7 @@ int validaCPF(char *cpf){
 	int digito10, digito11, tam;
 	soma = 0;
 	tam = strlen(cpf);
-	if(tam < 11){
+	if(tam < 11|| tam>11){
 		printf("\nDigite o CPF com 11 campos.\n");
 		return 1;
 		}
@@ -1006,7 +982,6 @@ void pagar(Lista* Aluno){
 		x = validaCPF(cpf3);
 		}
 	for (p=Aluno;p!=NULL;p=p->prox){
-	    printf("p = %s",p->cpf);
 		if(strcmp(p->cpf, cpf3) == 0){
 			int mes_pag=meses();
 			if(mes_pag==1){
@@ -1058,8 +1033,6 @@ void pagar(Lista* Aluno){
                 printf(" MêS DE DEZEMBRO PAGO !! \n");
             }
 		}
-		else
-            printf("CPF NÃO ENCONTRADO");
 		}
 	}
 }
@@ -1074,64 +1047,29 @@ void despesas(Despesas d){
     float funcionarios;
     float manutencao;
     float total;
-	char temp[5];
 	printf("\n\nINFORME AS DESPESAS DA ACADEMIA \n\n");
 
 
 	printf("Quanto gastou com luz ? \n");
-	scanf(" %4[^\n]", temp);
-	sscanf(temp, "%f", &luz);
-	int a = validaNumero(temp);
-	while(a == 1){
-		printf("Quanto gastou com luz ? \n");
-		scanf(" %4[^\n]", temp);
-		sscanf(temp, "%f", &luz);
-		a = validaNumero(temp);
-		}
-
+	scanf(" %f",&luz);
 	printf("Quanto gastou com agua ? \n");
-	scanf(" %4[^\n]", temp);
-	sscanf(temp, "%f", &agua);
-	int b = validaNumero(temp);
-	while(b == 1){
-		printf("Quanto gastou com agua ? \n");
-		scanf(" %4[^\n]", temp);
-		sscanf(temp, "%f", &agua);
-		b = validaNumero(temp);
-		}
+	scanf(" %f",&agua);
 
 	printf("Quanto gastou com funcionarios ? \n");
-	scanf(" %4[^\n]", temp);
-	sscanf(temp, "%f", &funcionarios);
-	int c = validaNumero(temp);
-	while(c == 1){
-		printf("Quanto gastou com funcionarios ? \n");
-		scanf(" %4[^\n]", temp);
-		sscanf(temp, "%f", &funcionarios);
-		c = validaNumero(temp);
-		}
-
+	scanf(" %f",&funcionarios);
 
 	printf("Quanto gastou com Manutenção ? \n");
-	scanf(" %4[^\n]", temp);
-	sscanf(temp, "%f", &manutencao);
-	int cc = validaNumero(temp);
-	while(cc == 1){
-		printf("Quanto gastou com luz ? \n");
-		scanf(" %4[^\n]", temp);
-		sscanf(temp, "%f", &manutencao);
-		cc = validaNumero(temp);
-		}
+	scanf(" %f",&manutencao);
 
 
 	total=luz+agua+funcionarios+manutencao;
 	//int mes;
 	printf(" QUAL O MES DESEJA CONTABILIZAR AS DESPESAS ?");
 	int mes_pag=meses();
-	printf("PAG %d ", mes_pag);
 
 	if(mes_pag==1){
         d.janeiro=total;
+
         printf(">>> MêS DE JANEIRO CONTABILIZADO\n");
         //mes = 1;
 		}
@@ -1191,8 +1129,6 @@ void despesas(Despesas d){
 		//mes = 12;
 	}
 
-	//fprintf = (despesa, "%.2f|%d|\n", total, mes);
-	//fclose(despesa);
 }
 
 void desativar(Lista* aluno){
@@ -1232,8 +1168,6 @@ void mostrar_aluno(Lista* aluno){
 				printf("ALUNOS ATIVOS ! ");
 				printf("%s\n", p->nome);
 			}
-			else
-				printf("Não existe aluno cadastrado ");
 		}
 	}
 }
@@ -1246,7 +1180,7 @@ void relatorios (Lista* aluno){
     }
     else{
 		float recebeu;
-		for (p=aluno;p!=NULL;p=p->prox){
+
 			printf("Informe um mes que deseja consultar receita: ");
 			int mes_pag=meses();
 			if(mes_pag==1){
@@ -1299,7 +1233,6 @@ void relatorios (Lista* aluno){
 			}
 		}
     }
-}
 
 void alunos_atrasos(Lista* aluno){
 Lista* p=aluno;
@@ -1352,9 +1285,6 @@ if (p==NULL){
 	}
 }
 Lista* ler_arquivos(Lista* Aluno){
-	FILE* ler_;
-	ler_ = fopen("fileDadosPessoais.txt", "r");
-
 	char nome[81];
 	char sexo[2];
 	char cpf[12];
@@ -1363,84 +1293,104 @@ Lista* ler_arquivos(Lista* Aluno){
 	char cidade[81];
 	char email[30];
 	char data[12];
-    //if(ler_ == NULL){
-    //    printf("Há um erro ao abrir este arquivo!\n");
-    //	  exit(1);
-	//}
-	//else{
-	while(fscanf(ler_, "%80[^|]|%1[^|]|%11[^|]|%2[^|]|%19[^|]|%80[^|]|%29[^|]|%11[^|]|",  nome, sexo, cpf, idade, celular, cidade, email, data) != EOF){
+	char alt[3];
+	char biceps[3];
+	char coxa[3];
+	char kg[3];
+	char peito[3];
+	FILE* ler_;
+	ler_ = fopen("teste.txt","rt");
+	if(ler_ == NULL){
+        printf("Há um erro ao abrir este arquivo!\n");
+    	  exit(1);
+	}
+	Lista* p=Aluno;
 
-		Lista* salvar=(Lista*)malloc(sizeof(Lista));
 
-		strcpy(salvar->nome, nome);
-		strcpy(salvar->sexo, sexo);
-		strcpy(salvar->cpf, cpf);
-		strcpy(salvar->idade, idade);
-		strcpy(salvar->celular, celular);
-		strcpy(salvar->cidade, cidade);
-		strcpy(salvar->email,email);
-		strcpy(salvar->data, data);
+	while(fscanf(ler_, "%s %s %s %s %s %s %s %s\n",  nome, sexo, cpf, idade, celular, cidade, email, data) == 8){
+    p=inserir_dados(p,nome,sexo,cpf,idade,celular,cidade,email,data);
 
-		salvar->prox = Aluno;
+printf(" Dados carregados");
+return p;
 
-		Aluno = salvar;
-        }
-	//}
-	fclose(ler_);
-	return Aluno;
+fclose(ler_);
+}
 }
 
+void salvar(Lista* l){
+	FILE *s;
+	s = fopen ("teste.txt", "wt");
+	Lista* salva;
+	for(salva=l; salva!=NULL; salva=salva->prox){
+		fprintf(s, "%s\n", salva->nome);
+		fprintf(s, "%s\n", salva->sexo);
+		fprintf(s, "%s\n", salva->cpf);
+		fprintf(s, "%s\n", salva->idade);
+		fprintf(s, "%s\n", salva->celular);
+		fprintf(s, "%s\n", salva->cidade);
+		fprintf(s, "%s\n", salva->email);
+		fprintf(s, "%s\n", salva->data);
+		fprintf(s, "%s\n", salva->medidas.alt);
+		fprintf(s, "%s\n", salva->medidas.biceps);
+		fprintf(s, "%s\n", salva->medidas.coxa);
+		fprintf(s, "%s\n", salva->medidas.kg);
+		fprintf(s, "%s\n", salva->medidas.peito);
+		fprintf(s, "%d\n", salva->ativo);
+}
+}
+void total_despesas(Despesas d){
 
-Lista* ler_medidas(Lista* Aluno){
-    FILE* ler__;
-    ler__ = fopen("fileMedidas.txt", "r");
-    Lista* x = Aluno;
-    char biceps[5];
-    char peito[5];
-    char coxa[5];
-    char kg[5];
-    char alt[5];
-	/*if(ler__ == NULL){
-        printf("Há um erro ao abrir este arquivo!\n");
-        exit(1);
-	}
-	else{*/
-        while(fscanf(ler__, "%4[^|]|%4[^|]|%4[^|]|%4[^|]|%4[^|]|",  x->medidas.biceps, x->medidas.peito, x->medidas.coxa, x->medidas.kg, x->medidas.alt) !=  EOF){
-            Lista* salvar_medidas = (Lista*) malloc(sizeof(Lista));
+		float recebeu;
 
-            strcpy(salvar_medidas->medidas.biceps, biceps);
-            strcpy(salvar_medidas->medidas.coxa, coxa);
-            strcpy(salvar_medidas->medidas.kg, kg);
-            strcpy(salvar_medidas->medidas.peito, peito);
-            strcpy(salvar_medidas->medidas.alt, alt);
+			printf("Informe um mes que deseja consultar as despesas : ");
+			int mes_pag=meses();
 
-            salvar_medidas->prox = Aluno;
-            Aluno = salvar_medidas;
+			if(mes_pag==1){
+				recebeu=d.janeiro;
+					printf("\nDespesas em janeiro %.2f\n",recebeu);
+				}
+				else if (mes_pag==2){
+					recebeu=d.fevereiro;
+					printf("\nDespesas em fevereiro %.2f\n",recebeu);
+				}
+				else if (mes_pag==3){
+					recebeu=d.marco;
+					printf("\nDespesas em março %.2f\n",recebeu);
+				}
+				else if (mes_pag==4){
+					recebeu=d.abri;
+					printf("\nDespesas em abril %.2f\n",recebeu);
+				}
+				else if (mes_pag==5){
+					recebeu=d.maio;
+					printf("\nDespesas em maio %.2f\n",recebeu);
+				}
+				else if (mes_pag==6){
+					recebeu=d.jun;
+					printf("\nDespesas em junho %.2f\n",recebeu);
+				}
+				else if (mes_pag==7){
+				   recebeu=d.jul;
+					printf("\nDespesas em julho %.2f\n",recebeu);
+				}
+				else if (mes_pag==8){
+					recebeu=d.ago;
+					printf("\nDespesas em Agosto %.2f\n",recebeu);
+				}
+				else if (mes_pag==9){
+					recebeu=d.set;
+					printf("\nDespesas em setembro %.2f\n",recebeu);
+				}
+				else if (mes_pag==10){
+					recebeu=d.out;
+					printf("\nDespesas em outubro %.2f\n",recebeu);
+				}
+				else if (mes_pag==11){
+					recebeu=d.nov;
+					printf("\nDespesas em Novembro %.2f\n",recebeu);
+				}
+				else if (mes_pag==12){
+					recebeu=d.dez;
+					printf("\nDespesas em dezembro %.2f\n",recebeu);
+			}
 		}
-	//}
-    fclose(ler__);
-	return Aluno;
-}
-/*
-Despesas* despesas(Despesas* d){
-    FILE* ler_despesas;
-    float total;
-    int mes;
-    if(ler_despesas == NULL){
-        printf("Há um erro ao abrir este arquivo!\n");
-        exit(1);
-	}
-	else{
-    ler_despesas = fopen("fileDespesaAcademia.txt", "r");
-    while(fscanf(ler_despesas, "%.2f|%d|\n", &total, &mes) != EOF){
-        Despesas* ler_Dep = (Despesas*) malloc(sizeof(Despesas));
-        Despesas->total = total;
-        Despesas->mes = mes;
-
-        ler_Dep->prox = Despesas;
-        Despesas = ler_Dep;
-        }
-	}
-    fclose(despesa);
-    return d;
-}*/
