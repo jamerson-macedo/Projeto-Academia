@@ -37,11 +37,11 @@ typedef struct pagamentos{						//Pagamentos dos alunos
 }Pagamentos;
 
 typedef struct medidas{							//Medidas dos alunos
-	char biceps[5];
-	char peito[5];
-	char coxa[5];
-	char kg[5];
-	char alt[5];
+	char biceps[4];
+	char peito[4];
+	char coxa[4];
+	char kg[4];
+	char alt[4];
 	struct medidas* prox;
 }Medidas;
 
@@ -93,6 +93,8 @@ int validaNumero(char desp[5]);
 Lista* ler_arquivos(Lista* Aluno);
 void salvar(Lista* l);
 void total_despesas(Despesas d);
+void salvartudo(Lista* Aluno);
+Lista* carregar(Lista* Aluno);
 
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
 
@@ -201,11 +203,10 @@ int main(void){
         imprimir_dados(Aluno);
         break;
     case 6:
-        Aluno = ler_arquivos(Aluno);
+        Aluno = carregar(Aluno);
         break;
     case 0:
-
-        salvar(Aluno);
+        salvartudo(Aluno);
         exit(0);
     default:
         printf("\nValor inválido.");
@@ -331,7 +332,7 @@ Lista* Dadospessoais(Lista* Aluno){
 		}
 
 	printf("\nInforme o E-MAIL : ");
-	scanf(" %80[^\n]",novo->email);
+	scanf(" %29[^\n]",novo->email);
 	fflush(stdin);
 
 	printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
@@ -376,50 +377,50 @@ Lista* inserir_Medidas(Lista* Aluno){
 		for (x=Aluno;x!=NULL;x=x->prox){
 			if(strcmp(x->cpf, cpf1) == 0){
 				printf("\nInforme o Peso do Aluno: ");
-				scanf(" %4[^\n]", x->medidas.kg);
+				scanf(" %3[^\n]", x->medidas.kg);
 				int val1 = validaMedidas(x->medidas.kg);
 				while(val1 == 1){
 					printf("\nInforme o Peso do Aluno: ");
-					scanf(" %4[^\n]", x->medidas.kg);
+					scanf(" %3[^\n]", x->medidas.kg);
 					fflush(stdin);
 					val1 = validaMedidas(x->medidas.kg);
 					}
 
 				printf("\nInforme o Biceps: ");
-				scanf(" %4[^\n]", x->medidas.biceps);
+				scanf(" %3[^\n]", x->medidas.biceps);
 				int val2 = validaMedidas(x->medidas.biceps);
 				while(val2 == 1){
 					printf("\nInforme o Biceps: ");
-					scanf(" %4[^\n]", x->medidas.biceps);
+					scanf(" %3[^\n]", x->medidas.biceps);
 					fflush(stdin);
 					val2 = validaMedidas(x->medidas.biceps);
 					}
 
 				printf("\nInforme o peitoral: ");
-				scanf(" %4[^\n]", x->medidas.peito);
+				scanf(" %3[^\n]", x->medidas.peito);
 				int val4 = validaMedidas(x->medidas.peito);
 				while(val4 == 1){
 					printf("\nInforme o peitoral: ");
-					scanf(" %4[^\n]", x->medidas.peito);
+					scanf(" %3[^\n]", x->medidas.peito);
 					fflush(stdin);
 					val4 = validaMedidas(x->medidas.peito);
 					}
 
 				printf("\nInforme a medida das pernas: ");
-				scanf(" %4[^\n]", x->medidas.coxa);
+				scanf(" %3[^\n]", x->medidas.coxa);
 				int val5 = validaMedidas(x->medidas.coxa);
 				while(val5 == 1){
 					printf("\nInforme a medida das pernas: ");
-					scanf(" %4[^\n]", x->medidas.coxa);
+					scanf(" %3[^\n]", x->medidas.coxa);
 					fflush(stdin);
 					val5 = validaMedidas(x->medidas.coxa);
 					}
 				printf("\n Informe a altura : ");
-				scanf(" %4[^\n]", x->medidas.alt);
+				scanf(" %3[^\n]", x->medidas.alt);
 				int val6 = validaMedidas(x->medidas.alt);
 				while (val6==1){
 					printf("\n Informe novamente a altura : ");
-					scanf(" %4[^\n]", x->medidas.alt);
+					scanf(" %3[^\n]", x->medidas.alt);
 					fflush(stdin);
 					val6=validaMedidas(x->medidas.alt);
 				}
@@ -454,7 +455,7 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				}
 
 			printf("\nInforme o sexo (M) ou (F): ");
-			scanf("%s", p->sexo);
+			scanf(" %1[^\n]", p->sexo);
 			fflush(stdin);
 			int val2 = validaSexo(p->sexo);
 			while(val2 == 1){
@@ -500,12 +501,12 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				}
 
 			printf("\nInforme o E-MAIL: ");
-			scanf(" %80[^\n]",p->email);
+			scanf(" %29[^\n]",p->email);
 			fflush(stdin);
 
 
 			printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
-			scanf("%s",p->data);
+			scanf(" %10[^\n]",p->data);
 			fflush(stdin);
 			int val8 = validaData(p->data);
 			while(val8 == 1){
@@ -1047,20 +1048,55 @@ void despesas(Despesas d){
     float funcionarios;
     float manutencao;
     float total;
+    char temp[5];
 	printf("\n\nINFORME AS DESPESAS DA ACADEMIA \n\n");
 
 
 	printf("Quanto gastou com luz ? \n");
-	scanf(" %f",&luz);
+	scanf(" %4[^\n]", temp);
+	sscanf(temp, "%f", &luz);
+	int a = validaNumero(temp);
+    while(a == 1){
+        printf("\nDigite novamente: ");
+        scanf(" %4[^\n]", temp);
+        sscanf(temp, "%f", &luz);
+        a = validaNumero(temp);
+    }
+
+
 	printf("Quanto gastou com agua ? \n");
-	scanf(" %f",&agua);
+	scanf(" %4[^\n]", temp);
+	sscanf(temp, "%f", &agua);
+	int b = validaNumero(temp);
+    while(b == 1){
+        printf("\nDigite novamente: ");
+        scanf(" %4[^\n]", temp);
+        sscanf(temp, "%f", &agua);
+        b = validaNumero(temp);
+    }
+
 
 	printf("Quanto gastou com funcionarios ? \n");
-	scanf(" %f",&funcionarios);
+	scanf(" %4[^\n]", temp);
+	sscanf(temp, "%f", &funcionarios);
+	int c = validaNumero(temp);
+    while(c == 1){
+        printf("\nDigite novamente: ");
+        scanf(" %4[^\n]", temp);
+        sscanf(temp, "%f", &funcionarios);
+        c = validaNumero(temp);
+    }
 
 	printf("Quanto gastou com Manutenção ? \n");
-	scanf(" %f",&manutencao);
-
+    scanf(" %4[^\n]", temp);
+	sscanf(temp, "%f", &manutencao);
+	int cc = validaNumero(temp);
+    while(cc == 1){
+        printf("\nDigite novamente: ");
+        scanf(" %4[^\n]", temp);
+        sscanf(temp, "%f", &manutencao);
+        cc = validaNumero(temp);
+    }
 
 	total=luz+agua+funcionarios+manutencao;
 	//int mes;
@@ -1394,3 +1430,64 @@ void total_despesas(Despesas d){
 					printf("\nDespesas em dezembro %.2f\n",recebeu);
 			}
 		}
+
+Lista* carregar(Lista* Aluno) {
+    FILE *file = fopen("teste.txt", "r");
+
+    char nome[81];
+	char sexo[2];
+	char cpf[12];
+	char idade[3];
+	char celular[20];
+	char cidade[81];
+	char email[30];
+	char data[12];
+	char alt[4];
+	char biceps[4];
+	char coxa[4];
+	char kg[4];
+	char peito[4];
+    if (file == NULL) {
+        printf("Erro, não foi possivel abrir o arquivo\n");
+    } else {
+        while (fscanf(file, "%80[^|]|%2[^|]|%11[^|]|%2[^|]|%19[^|]|%80[^|]|29[^|]|%11[^|]|%3[^|]|%3[^|]|%3[^|]|%3[^|]|%3[^|]|\n", nome,sexo,cpf,idade,celular,cidade,email,data,alt,biceps,coxa,kg,peito) != EOF) {
+            Lista* nova = (Lista*) malloc(sizeof(Lista));
+
+   //         if (nome[0] >= 33) {
+                strcpy(nova->nome, nome);
+                strcpy(nova->sexo, sexo);
+                strcpy(nova->cpf,cpf);
+                strcpy(nova->idade,idade);
+                strcpy(nova->celular,celular);
+                strcpy(nova->cidade,cidade);
+                strcpy(nova->email,email);
+                strcpy(nova->data,data);
+                strcpy(nova->medidas.alt,alt);
+                strcpy(nova->medidas.biceps,biceps);
+                strcpy(nova->medidas.coxa,coxa);
+                strcpy(nova->medidas.kg,kg);
+                strcpy(nova->medidas.peito,peito);
+                nova->prox = Aluno;
+                Aluno = nova;
+            //}
+        }
+    }
+    fclose(file);
+    return Aluno;
+}
+
+void salvartudo(Lista* Aluno) {
+    FILE *file = fopen("teste.txt", "w+");
+    if (file == NULL) {
+        printf("Houve um erro ao abrir o arquivo.\n");
+        exit(1);
+    } else {
+        Lista* aux;
+        for (aux = Aluno; aux != NULL; aux = aux->prox) {
+            fprintf(file, "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|\n", aux->nome, aux->sexo,aux->cpf, aux->idade,aux->celular,aux->cidade,aux->email, aux->data, aux->medidas.alt, aux->medidas.biceps, aux->medidas.coxa, aux->medidas.kg, aux->medidas.peito);
+        }
+        fclose(file);
+    }
+}
+
+
