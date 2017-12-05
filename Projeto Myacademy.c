@@ -68,7 +68,7 @@ void cadastroSerie(void);
 int financeiro(void);
 int menuAluno(void);
 Lista* criarLista();
-Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,char *celular,char *cidade,char *email,char *data);
+Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,char *celular,char *cidade,char *email, char *data,char *biceps,char *peito, char *coxa,char *kg,char *alt);
 Lista* remover_cpf(Lista* Aluno, char* cpf);
 void Atualizar_dados(Lista* Aluno, char *cpf);
 void imprimir_dados(Lista *Aluno);
@@ -98,13 +98,15 @@ int menu_at(void);
 void ativar(Lista* aluno);
 int alunos_desativaados(Lista* aluno);
 int validaEmail(char *email);
+void salvardespesas(Despesas d);
+Despesas carregardespesas(Despesas d);
 //void salvardespesas(Despesas* d);
 //Despesas* carregardespesas(Despesas* d);
 Despesas despesas(Despesas me);
 //void inicializa_Medidas(Lista** Aluno);
 
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
-
+void salvardespesas(Despesas d);
 int main(void){
 	setlocale(LC_ALL, "portuguese");
 
@@ -112,12 +114,25 @@ int main(void){
 
 
     Despesas DESPESAS;
+    DESPESAS.janeiro=0;
+    DESPESAS.fevereiro=0;
+    DESPESAS.marco=0;
+    DESPESAS.abri=0;
+    DESPESAS.maio=0;
+    DESPESAS.jun=0;
+    DESPESAS.jul=0;
+    DESPESAS.ago=0;
+    DESPESAS.set=0;
+    DESPESAS.out=0;
+    DESPESAS.nov=0;
+    DESPESAS.dez=0;
 	//Despesas* despesas_;
     int opc;
     int opc2;
     char cpf[12];
     int acesso;
         Aluno = carregar(Aluno);
+        DESPESAS=carregardespesas(DESPESAS);
     inicio:
     opc=menuPrincipal();
 
@@ -222,6 +237,7 @@ int main(void){
 
     case 0:
         salvartudo(Aluno);
+        salvardespesas(DESPESAS);
         //salvardespesas(despesas_);
         exit(0);
     default:
@@ -368,15 +384,14 @@ Lista* Dadospessoais(Lista* Aluno){
 		}
 
 	printf("\n\nCADASTRO CONCLUÍDO! \n\n");
-	
 	strcpy(novo->medidas.biceps, "0");
 	strcpy(novo->medidas.peito, "0");
     strcpy(novo->medidas.coxa, "0");
     strcpy(novo->medidas.kg, "0");
     strcpy(novo->medidas.alt, "0");
-    
-	Aluno=inserir_dados(Aluno,novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data);
-  
+
+	Aluno=inserir_dados(Aluno,novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data, novo->medidas.biceps,novo->medidas.peito,novo->medidas.coxa,novo->medidas.kg,novo->medidas.alt);
+
 	return Aluno;
 
 	}
@@ -818,7 +833,7 @@ Lista* criarLista(){
 	return NULL;
 	}
 
-Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,char *celular,char *cidade,char *email, char *data){
+Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,char *celular,char *cidade,char *email, char *data,char *biceps,char *peito, char *coxa,char *kg,char *alt){
 	Lista* p=aluno;  // RECEBE A LISTA ALUNO
 	Lista* ant=NULL; // GUARDA A POSIÇÃO ANTERIOR
 	Lista* novo=(Lista*)malloc(sizeof(Lista)); // adiciona nome
@@ -831,6 +846,11 @@ Lista* inserir_dados(Lista *aluno,char *nome,char *sexo,char *cpf,char *idade,ch
 	strcpy(novo->cidade, cidade);
 	strcpy(novo->email,email);
 	strcpy(novo->data, data);
+	strcpy(novo->medidas.biceps,biceps );
+	strcpy(novo->medidas.coxa,coxa );
+	strcpy(novo->medidas.peito,peito);
+	strcpy(novo->medidas.kg,kg );
+	strcpy(novo->medidas.alt,alt);
 	novo->ativo=1;
 	novo->prox=NULL;
 
@@ -1007,7 +1027,7 @@ int validaCPF(char cpf[12]){
         }
         return 0;
     }
-    return 1;
+    return 0;
 }
 
 
@@ -1594,23 +1614,21 @@ int alunos_desativaados(Lista* aluno){
 
 
 
-/*void salvardespesas(Despesas* d){
+void salvardespesas(Despesas d){
 	FILE *file = fopen("bancod.txt", "w");
 	if (file == NULL) {
 		printf("Houve um erro ao abrir o arquivo.\n");
 		exit(1);
 	}
 	else {
-		Despesas* aux;
-		for(aux = d;aux != NULL;aux=aux->prox){
-			fprintf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n",aux->janeiro, aux->fevereiro, aux->marco, aux->abri, aux->maio, aux->jun, aux->jul, aux->ago, aux->set, aux->out, aux->nov, aux->dez);
-		}
+		Despesas aux=d;
+			fprintf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n",aux.janeiro, aux.fevereiro, aux.marco, aux.abri, aux.maio, aux.jun, aux.jul, aux.ago, aux.set, aux.out, aux.nov, aux.dez);
 		fclose(file);
 	}
 
 }
 
-Despesas* carregardespesas(Despesas* d){
+Despesas carregardespesas(Despesas d){
 	FILE *file = fopen("bancod.txt", "a+");
 	float janeiro;
 	float fevereiro;
@@ -1629,8 +1647,8 @@ Despesas* carregardespesas(Despesas* d){
 		exit(1);
 		}
 	else {
-	while(fscanf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n", &janeiro, &fevereiro, &marco, &abri, &maio, &jun, &jul, &ago, &set, &out, &nov, &dez) != EOF){
-		Despesas* nova = (Despesas*) malloc(sizeof(Despesas));
+	fscanf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n", &janeiro, &fevereiro, &marco, &abri, &maio, &jun, &jul, &ago, &set, &out, &nov, &dez);
+		Despesas nova = (Despesas) malloc(sizeof(Despesas));
 		nova->janeiro=janeiro;
 		nova->fevereiro=fevereiro;
 		nova->marco=marco;
@@ -1643,11 +1661,9 @@ Despesas* carregardespesas(Despesas* d){
 		nova->out=out;
 		nova->nov=nov;
 		nova->dez=dez;
-		nova->prox = d;
-		d = nova;
 
-		}
+
 	fclose(file);
 	}
 	return d;
-}*/
+}
