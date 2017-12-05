@@ -84,7 +84,6 @@ int validaCPF(char *cpf);
 int meses(void);
 void pagar(Lista* Aluno);
 void desenvolvimentoAluno(Lista* Aluno);
-void despesas(Despesas);
 void desativar(Lista* aluno);
 void mostrar_aluno(Lista* aluno);
 void relatorios (Lista* aluno);
@@ -92,21 +91,23 @@ void alunos_atrasos(Lista* aluno);
 int validaNumero(char desp[5]);
 Lista* ler_arquivos(Lista* Aluno);
 void salvar(Lista* l);
-void total_despesas(Despesas* d);
+void total_despesas(Despesas re);
 void salvartudo(Lista* Aluno);
 Lista* carregar(Lista* Aluno);
 int menu_at(void);
 void ativar(Lista* aluno);
-void alunos_desativaados(Lista* aluno);
+int alunos_desativaados(Lista* aluno);
 // ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
+Despesas despesas(Despesas me);
 
+void inicializa_Medidas(Lista** Aluno);
 int main(void){
 	setlocale(LC_ALL, "portuguese");
 
     Lista* Aluno=criarLista();
 
 
-    Despesas* DESPESAS;
+    Despesas DESPESAS;
 
     int opc;
     int opc2;
@@ -176,9 +177,9 @@ int main(void){
             break;
         }
         else if (opc2==2){
-            //system("cls");
-            //despesas(DESPESAS);
-            //break;
+            system("cls");
+            DESPESAS=despesas(DESPESAS);
+            break;
         }
         else if (opc2==3){
             system("cls");
@@ -353,8 +354,9 @@ Lista* Dadospessoais(Lista* Aluno){
 
 	printf("\n\nCADASTRO CONCLUÍDO! \n\n");
 	Aluno=inserir_dados(Aluno,novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data);
-
+    //inicializa_Medidas(Aluno);
 	return Aluno;
+
 	}
 
 Lista* inserir_Medidas(Lista* Aluno){
@@ -478,8 +480,19 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				}
 				printf("\n\n ATUALIZADO COM SUCESSO\n\n");
         }
-
         else if (menu==3){
+        printf("\nInforme seu CPF: ");
+			scanf(" %12[^\n]", p->cpf);
+			fflush(stdin);
+			int val3 = validaCPF(p->cpf);
+			while(val3 == 1){
+				printf("\nDigite o CPF sem pontos e tracos: ");
+				scanf(" %12[^\n]", p->cpf);
+				val3 = validaCPF(p->cpf);
+				}
+        }
+
+        else if (menu==4){
 			printf("\nInforme a idade: ");
 			scanf(" %2[^\n]",p->idade);
 			fflush(stdin);
@@ -492,7 +505,7 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				}
 				printf("\n\n ATUALIZADO COM SUCESSO\n\n");
         }
-        else if (menu==4){
+        else if (menu==5){
 
 			printf("\nInforme o celular [sem pontos e traços]: ");
 			scanf(" %11[^\n]",p->celular);
@@ -506,7 +519,7 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				}
 				printf("\n\n ATUALIZADO COM SUCESSO\n\n");
         }
-        else if (menu==5){
+        else if (menu==6){
 			printf("\nInforme a cidade: ");
 			scanf(" %80[^\n]",p->cidade);
 			fflush(stdin);
@@ -519,13 +532,14 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 				}
 				printf("\n\n ATUALIZADO COM SUCESSO\n\n");
         }
-        else if (menu==6){
+        else if (menu==7){
 
 			printf("\nInforme o E-MAIL: ");
 			scanf(" %29[^\n]",p->email);
 			fflush(stdin);
 
-
+        }
+        else if (menu==8){
 			printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
 			scanf(" %10[^\n]",p->data);
 			fflush(stdin);
@@ -665,11 +679,11 @@ void desenvolvimentoAluno(Lista* Aluno){
 
             if(nova_altura>altura){
                 resAlt=nova_altura-altura;
-                printf("Voce aumentou %.2f cm.\n",resAlt);
+                printf("Voce aumentou %.1f cm.\n",resAlt);
             }
             else if(nova_altura<altura){
                 resPeso=nova_altura-altura;
-                printf("Voce diminuiu %.2f cm.\n",resPeso);
+                printf("Voce diminuiu %.'f cm.\n",resPeso);
             }
             else if (nova_altura==altura){
                 printf("Não obteve resultados ! ");
@@ -688,11 +702,11 @@ void desenvolvimentoAluno(Lista* Aluno){
 
             if (novo_peito>peito){
                 resPeito=novo_peito-peito;
-                printf(" Voce aumentou %.2f cm.",resPeito);
+                printf(" Voce aumentou %.1f cm.",resPeito);
             }
             else if (novo_peito<peito){
                 resPeito=novo_peito-peito;
-                printf("Voce diminuiu %.2f cm.",resPeito);
+                printf("Voce diminuiu %.1f cm.",resPeito);
             }
             else if (novo_peito==peito){
                 printf("Não obteve resultados ! ");
@@ -712,11 +726,11 @@ void desenvolvimentoAluno(Lista* Aluno){
 
             if (novo_biceps>biceps){
                 resBraco=novo_biceps-biceps;
-                printf("Você aumentou %.2f cm.",resBraco);
+                printf("Você aumentou %.1f cm.",resBraco);
             }
             else if (novo_biceps<biceps){
                 resBraco=novo_biceps-biceps;
-                printf(" voce diminuiu %.2f cm",resBraco);
+                printf(" voce diminuiu %.1f cm",resBraco);
             }
             else if (novo_biceps==biceps){
                 printf(" Não obteve resultados ! ");
@@ -736,11 +750,11 @@ void desenvolvimentoAluno(Lista* Aluno){
 
             if (nova_coxa>coxa){
                 resCoxs=nova_coxa-coxa;
-                printf("Você aumentou %.2f cm.",resCoxs);
+                printf("Você aumentou %.1f cm.",resCoxs);
             }
             else if (nova_coxa<coxa){
                 resCoxs=nova_coxa-coxa;
-                printf("Você diminuiu %.2f cm.",resCoxs);
+                printf("Você diminuiu %.1f cm.",resCoxs);
             }
             else if (nova_coxa==coxa){
                      printf(" Não obteve resultados ! ");
@@ -1063,8 +1077,7 @@ void pagar(Lista* Aluno){
 	}
 }
 
-void despesas(Despesas d){
-
+Despesas despesas(Despesas me){
     float luz;
     float agua;
     float funcionarios;
@@ -1122,71 +1135,73 @@ void despesas(Despesas d){
 
 	total=luz+agua+funcionarios+manutencao;
 	//int mes;
+	printf(" TOTAL %f",total);
 	printf(" QUAL O MES DESEJA CONTABILIZAR AS DESPESAS ?");
 	int mes_pag=meses();
+	printf("chegou ");
 
 	if(mes_pag==1){
-        d.janeiro=total;
+        me.janeiro=total;
 
         printf(">>> MêS DE JANEIRO CONTABILIZADO\n");
         //mes = 1;
 		}
 	else if (mes_pag==2){
-		d.fevereiro=total;
+		me.fevereiro=total;
 		printf(">>>  MêS DE FEVEREIRO CONTABILIZADO!! \n");
 		//mes = 2;
 		}
 	else if (mes_pag==3){
-		d.marco=total;
+		me.marco=total;
 		printf(">>>  MêS DE MARÇO CONTABILIZADO !! \n");
 		//mes = 3;
 		}
 	else if (mes_pag==4){
-		d.abri=total;
+		me.abri=total;
 		printf(">>>  MêS DE ABRIL CONTABILIZADO !! \n");
 		//mes = 4;
 		}
 	else if (mes_pag==5){
-		d.maio=total;
+		me.maio=total;
 		printf(">>>  MêS DE MAIO CONTABILIZADO !! \n");
 		//mes = 5;
 		}
 	else if (mes_pag==6){
-		d.jun=total;
+		me.jun=total;
 		printf(">>>  MêS DE JUNHO CONTABILIZADO !! \n");
 		//mes = 6;
 		}
 	else if (mes_pag==7){
-		d.jul=total;
+		me.jul=total;
 		printf(">>>  MêS DE JULHO CONTABILIZADO !! \n");
 		//mes = 7;
 		}
 	else if (mes_pag==8){
-		d.ago=total;
+		me.ago=total;
 		printf(">>>  MêS DE AGOSTO CONTABILIZADO !! \n");
 		//mes = 8;
 		}
 	else if (mes_pag==9){
-		d.set=total;
+		me.set=total;
 		printf(">>>  MêS DE SETEMBRO CONTABILIZADO !! \n");
 		//mes = 9;
 		}
 	else if (mes_pag==10){
-		d.out=total;
+		me.out=total;
 		printf(">>>  MêS DE OUTUBRO CONTABILIZADO !! \n");
 		//mes = 10;
 		}
 	else if (mes_pag==11){
-		d.nov=total;
+		me.nov=total;
 		printf(">>>  MêS DE NOVEMBRO CONTABILIZADO !! \n");
 		//mes = 11;
 		}
 	else if (mes_pag==12){
-		d.dez=total;
+		me.dez=total;
 		printf(">>>  MêS DE DEZEMBRO CONTABILIZADO !! \n");
 		//mes = 12;
 	}
-
+return me;
 }
 
 void desativar(Lista* aluno){
@@ -1210,7 +1225,7 @@ void desativar(Lista* aluno){
 		for (p=aluno;p!=NULL;p=p->prox){
 			if(strcmp(p->cpf, cpf3) == 0){
 				p->ativo=0;
-				printf("O aluno %s, desativado do sistema com sucesso.", p->nome);
+				printf("\nO aluno %s, desativado do sistema com sucesso.\n\n", p->nome);
 			}
         }
     }
@@ -1345,60 +1360,59 @@ if (p==NULL){
 	}
 }
 
-void total_despesas(Despesas* d){
-
+void total_despesas(Despesas re){
 		float recebeu;
 
 			printf("Informe um mes que deseja consultar as despesas : ");
 			int mes_pag=meses();
 
 			if(mes_pag==1){
-				recebeu=d->janeiro;
-					printf("\nDespesas em janeiro %.2f\n",recebeu);
+				recebeu=re.janeiro;
+					printf("\nDespesas em janeiro %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==2){
-					recebeu=d->fevereiro;
-					printf("\nDespesas em fevereiro %.2f\n",recebeu);
+					recebeu=re.fevereiro;
+					printf("\nDespesas em fevereiro %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==3){
-					recebeu=d->marco;
-					printf("\nDespesas em março %.2f\n",recebeu);
+					recebeu=re.marco;
+					printf("\nDespesas em março %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==4){
-					recebeu=d->abri;
-					printf("\nDespesas em abril %.2f\n",recebeu);
+					recebeu=re.abri;
+					printf("\nDespesas em abril %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==5){
-					recebeu=d->maio;
-					printf("\nDespesas em maio %.2f\n",recebeu);
+					recebeu=re.maio;
+					printf("\nDespesas em maio %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==6){
-					recebeu=d->jun;
-					printf("\nDespesas em junho %.2f\n",recebeu);
+					recebeu=re.jun;
+					printf("\nDespesas em junho %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==7){
-				   recebeu=d->jul;
-					printf("\nDespesas em julho %.2f\n",recebeu);
+				   recebeu=re.jul;
+					printf("\nDespesas em julho %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==8){
-					recebeu=d->ago;
-					printf("\nDespesas em Agosto %.2f\n",recebeu);
+					recebeu=re.ago;
+					printf("\nDespesas em Agosto %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==9){
-					recebeu=d->set;
-					printf("\nDespesas em setembro %.2f\n",recebeu);
+					recebeu=re.set;
+					printf("\nDespesas em setembro %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==10){
-					recebeu=d->out;
-					printf("\nDespesas em outubro %.2f\n",recebeu);
+					recebeu=re.out;
+					printf("\nDespesas em outubro %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==11){
-					recebeu=d->nov;
-					printf("\nDespesas em Novembro %.2f\n",recebeu);
+					recebeu=re.nov;
+					printf("\nDespesas em Novembro %.1f R$\n",recebeu);
 				}
 				else if (mes_pag==12){
-					recebeu=d->dez;
-					printf("\nDespesas em dezembro %.2f\n",recebeu);
+					recebeu=re.dez;
+					printf("\nDespesas em dezembro %.1f R$\n",recebeu);
 			}
 		}
 
@@ -1488,7 +1502,11 @@ void ativar(Lista* aluno){
 			system("pause");
 		}
 		else{
-                alunos_desativaados(p);
+                if(alunos_desativaados(p)==0){
+            printf("Não existe alunos inativos");
+		}
+		else {
+
                 printf("\n\n");
 		char cpf3[12];
 		printf("DIGITE O CPF DO ALUNO : ");
@@ -1500,27 +1518,57 @@ void ativar(Lista* aluno){
 			x = validaCPF(cpf3);
 		}
 		for (p=aluno;p!=NULL;p=p->prox){
+
 			if(strcmp(p->cpf, cpf3) == 0){
 				p->ativo=1;
 				printf("O aluno %s, Esta ativado com sucesso.", p->nome);
 			}
         }
     }
-}
 
-void alunos_desativaados(Lista* aluno){
+		}
+}
+int alunos_desativaados(Lista* aluno){
 	Lista* p=aluno;
+	int cont=0;
 		if (p==NULL){
 			printf("\n\nNão existe aluno cadastrado !!\n\n");
 			system("pause");
 		}
 		else{
+
 		for (p=aluno;p!=NULL;p=p->prox){
 			if(p->ativo==0){
+			    cont++;
 				printf("ALUNOS INATIVOS ! ");
 				printf("%s\n", p->nome);
 			}
 		}
-	}
-}
 
+	}
+	return cont;
+}
+//void inicializa_Medidas(Lista** x){
+
+    //*x->medidas.kg=0
+    //*x->medidas.biceps=0;
+    //*x->medidas.peito=0;
+    //*x->medidas.coxa=0;
+    //*x->medidas.alt=0;
+//}
+
+
+
+//void salvardespesas(Despesas d) {
+    //FILE *file = fopen("bancod.txt", "w");
+    //if (file == NULL) {
+        //printf("Houve um erro ao abrir o arquivo.\n");
+       // exit(1);
+    //} else {
+       // Despesas aux;
+        //for (aux = d; aux != NULL;) {
+          //  fprintf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f\n",aux.janeiro,aux.fevereiro,aux.marco,aux.abri,aux.maio,aux.jun,aux.jul,aux.ago,aux.set,aux.out,aux.nov,aux.dez);
+        //}
+        //fclose(file);
+    //}
+//}
