@@ -18,7 +18,7 @@ typedef struct despesas{				//Despesas da academia
 	float out;
 	float nov;
 	float dez;
-	struct despesa_* prox;
+	struct despesas* prox;
 }Despesas;
 
 typedef struct pagamentos{						//Pagamentos dos alunos
@@ -77,10 +77,10 @@ void Saude_Aluno(Lista* Aluno);
 int validaTelefone(char *telefone);
 int validaNome(char *cidade);
 int validaSexo(char *sexo);
-int validaIdade(char *idade);
+int validaIdade(char idade[3]);
 int validaData(char *nasc);
 int validaMedidas(char *medida);
-int validaCPF(char *cpf);
+int validaCPF(char cpf[12]);
 int meses(void);
 void pagar(Lista* Aluno);
 void desenvolvimentoAluno(Lista* Aluno);
@@ -97,10 +97,14 @@ Lista* carregar(Lista* Aluno);
 int menu_at(void);
 void ativar(Lista* aluno);
 int alunos_desativaados(Lista* aluno);
-// ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
+int validaEmail(char *email);
+//void salvardespesas(Despesas* d);
+//Despesas* carregardespesas(Despesas* d);
 Despesas despesas(Despesas me);
+//void inicializa_Medidas(Lista** Aluno);
 
-void inicializa_Medidas(Lista** Aluno);
+// ESSA FUNÇÃO IRÁ CHAMAR A OUTRAS FUNÇÕES APENAS
+
 int main(void){
 	setlocale(LC_ALL, "portuguese");
 
@@ -108,7 +112,7 @@ int main(void){
 
 
     Despesas DESPESAS;
-
+	//Despesas* despesas_;
     int opc;
     int opc2;
     char cpf[12];
@@ -116,6 +120,10 @@ int main(void){
         Aluno = carregar(Aluno);
     inicio:
     opc=menuPrincipal();
+
+
+	//despesas_ = carregardespesas(despesas_);								                  //Carregar;
+
 
     switch (opc){
     case 1:
@@ -214,6 +222,7 @@ int main(void){
 
     case 0:
         salvartudo(Aluno);
+        //salvardespesas(despesas_);
         exit(0);
     default:
         printf("\nValor inválido.");
@@ -340,6 +349,12 @@ Lista* Dadospessoais(Lista* Aluno){
 	printf("\nInforme o E-MAIL : ");
 	scanf(" %29[^\n]",novo->email);
 	fflush(stdin);
+	int val7 = validaEmail(novo->email);
+	while(val7 == 1){
+		printf("\nInforme o E-MAIL : ");
+		scanf(" %29[^\n]",novo->email);
+		val7 = validaEmail(novo->email);
+		}
 
 	printf("\nInforme a data de Nascimento Ex: 01/01/2001: ");
 	scanf(" %10[^\n]", novo->data);
@@ -353,8 +368,15 @@ Lista* Dadospessoais(Lista* Aluno){
 		}
 
 	printf("\n\nCADASTRO CONCLUÍDO! \n\n");
+	
+	strcpy(novo->medidas.biceps, "0");
+	strcpy(novo->medidas.peito, "0");
+    strcpy(novo->medidas.coxa, "0");
+    strcpy(novo->medidas.kg, "0");
+    strcpy(novo->medidas.alt, "0");
+    
 	Aluno=inserir_dados(Aluno,novo->nome,novo->sexo,novo->cpf,novo->idade,novo->celular,novo->cidade,novo->email,novo->data);
-    //inicializa_Medidas(Aluno);
+  
 	return Aluno;
 
 	}
@@ -362,7 +384,7 @@ Lista* Dadospessoais(Lista* Aluno){
 Lista* inserir_Medidas(Lista* Aluno){
 
 	Lista* x=Aluno;
-
+	//inicializa_Medidas(Aluno);
     char cpf1[12];
     if(Aluno==NULL){
             printf("\n\nNÃO EXISTE ALUNO CADASTRADO. \n\n");
@@ -537,6 +559,12 @@ void Atualizar_dados(Lista* Aluno, char *cpf){
 			printf("\nInforme o E-MAIL: ");
 			scanf(" %29[^\n]",p->email);
 			fflush(stdin);
+			int val7 = validaEmail(p->email);
+			while(val7 == 1){
+				printf("\nInforme o E-MAIL : ");
+				scanf(" %29[^\n]", p->email);
+				val7 = validaEmail(p->email);
+				}
 
         }
         else if (menu==8){
@@ -683,7 +711,7 @@ void desenvolvimentoAluno(Lista* Aluno){
             }
             else if(nova_altura<altura){
                 resPeso=nova_altura-altura;
-                printf("Voce diminuiu %.'f cm.\n",resPeso);
+                printf("Voce diminuiu %.f cm.\n",resPeso);
             }
             else if (nova_altura==altura){
                 printf("Não obteve resultados ! ");
@@ -889,24 +917,61 @@ int validaSexo(char *sexo){
 	return 0;
 	}
 
-int validaIdade(char *idade){
+int validaIdade(char idade[3]){
 	int a;
 	for(a = 0; idade[a] != '\0'; a++){
-		if(idade[a] >= 48 && idade[a] <= 57)
-			return 0;
+		if(idade[a] >= 48 && idade[a] <= 57){
+				return 0;
+		}
 		else
 			return 1;
 		}
 	return 0;
 	}
 
+
+int validaEmail(char *email){
+	if (strlen(email) >= 8) {
+        int cont = 0;
+        int cont1 = 0;
+        int i;
+        for (i = 0; email[i] != '\0'; i++){
+            if (email[i] == '@') {
+                cont++;
+                cont1++;
+            }
+            else if (email[i] == '.') {
+                cont++;
+            }
+            else if (cont == 2 && cont1 == 1) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+
+
+
 int validaData(char *nasc){
-		if(nasc[2] == 47 && nasc[5] == 47)
-			return 0;
-		else
-			return 1;
-	return 0;
+    int cont = 0;
+	if (strlen(nasc) == 10) {
+        for (cont = 0; nasc[cont] != '\0'; cont++) {
+            if ((cont < 2) || (cont > 2 && cont < 5) || (cont > 5 && cont < 10)) {
+                if (!(nasc[cont] >= 48 && nasc[cont] <= 57)) {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+
+    }
+    else {
+        return 1;
+		}
 	}
+
 
 int validaMedidas(char *medida){
 	int a;
@@ -920,55 +985,32 @@ int validaMedidas(char *medida){
 	return 0;
 	}
 
-int validaCPF(char *cpf){
-	int contador, soma, resultado, resultado2, valor;
-	int digito10, digito11, tam;
-	soma = 0;
-	tam = strlen(cpf);
-	if(tam < 11|| tam>11){
-		printf("\nDigite o CPF com 11 campos.\n");
-		return 1;
-		}
-	else{
-		for(contador = 0; contador < 11; contador++){
-			cpf[contador] -= 48;
-		}
-
-		for(contador = 0; contador < 9; contador++){ //Verificação para primeiro digito
-			soma += cpf[contador] * (10 - contador);
-			}
-
-		resultado = soma % 11;
-
-		if(resultado == 0 || resultado == 1)
-			digito10 = 0;
-		else
-			digito10 = 11 - resultado;
-
-		soma = 0;
-
-		for(contador = 0; contador < 10; contador++){ //Verificação para segundo digito
-			soma += cpf[contador] * (11 - contador);
-			}
-		valor = (soma / 11) * 11;
-		resultado2 = soma - valor;
-		if(resultado2 == 0 || resultado2 == 1)
-			digito11 = 0;
-		else
-			digito11 = 11 - resultado2;
-
-		for(contador = 0; contador < 11; contador++){
-				cpf[contador] += 48;
-			}
-		if((digito10 == cpf[9]) && (digito11 == cpf[10]))
-			return 1;
-		else
-			return 0;
-	}
+int validaCPF(char cpf[12]){
 
 
-	return 0;
+	int cont, aux1, aux2 = 0, digito;
+    aux1 = (int) strlen(cpf);
+    int a;
+    if(aux1 == 11 && cpf[1] != cpf[3] && cpf[2] != cpf[7]){
+        for (a = 9; a <= 10; a++) {
+            aux2 = 0;
+
+            for (cont = 0; cont < a; cont++)
+                aux2 += (cpf[cont] - 48) * ((a + 1) - cont);
+
+            digito = aux2 % 11;
+            digito = (digito < 2 ? 0 : 11 - digito);
+
+            if ((cpf[a] - 48) != digito) {
+                return 1;
+				}
+        }
+        return 0;
+    }
+    return 1;
 }
+
+
 
 int validaNumero(char desp[5]){
 	int a;
@@ -1310,53 +1352,53 @@ void relatorios (Lista* aluno){
     }
 
 void alunos_atrasos(Lista* aluno){
-Lista* p=aluno;
-if (p==NULL){
-        printf("\nNão existe aluno cadastrado.\n");
-        system("pause");
-    }
-    else{
-
-	for (p=aluno;p!=NULL;p=p->prox){
-	    printf("\n%s está devendo ", p->nome);
-            if(p->pago.janeiro==0){
-                printf(">>> Janeiro \n");
-				}
-			if (p->pago.fevereiro==0){
-                printf(">>> Fevereiro \n");
-				}
-			 if (p->pago.marco==0){
-                printf(">>> Março \n");
-				}
-			 if (p->pago.abri==0){
-                printf(">>> Abril \n");
-				}
-             if (p->pago.maio==0){
-                printf(">>> Maio \n");
-				}
-             if (p->pago.jun==0){
-                printf(">>> Junho \n");
-				}
-             if (p->pago.jul==0){
-               printf(">>> Julho \n");
-				}
-             if (p->pago.ago==0){
-                printf(">>> Agosto \n");
-				}
-             if (p->pago.set==0){
-                printf(">>> Setembro \n");
-				}
-             if (p->pago.out==0){
-                printf(">>> Outubro \n");
-				}
-             if (p->pago.nov==0){
-
-                printf(">>> Novembro \n");
-				}
-             if (p->pago.dez==0){
-                printf(">>> Dezembro \n");
-				}
+	Lista* p=aluno;
+	if (p==NULL){
+			printf("\nNão existe aluno cadastrado.\n");
+			system("pause");
 		}
+		else{
+
+		for (p=aluno;p!=NULL;p=p->prox){
+			printf("\n%s está devendo ", p->nome);
+				if(p->pago.janeiro==0){
+					printf(">>> Janeiro \n");
+					}
+				if (p->pago.fevereiro==0){
+					printf(">>> Fevereiro \n");
+					}
+				 if (p->pago.marco==0){
+					printf(">>> Março \n");
+					}
+				 if (p->pago.abri==0){
+					printf(">>> Abril \n");
+					}
+				 if (p->pago.maio==0){
+					printf(">>> Maio \n");
+					}
+				 if (p->pago.jun==0){
+					printf(">>> Junho \n");
+					}
+				 if (p->pago.jul==0){
+				   printf(">>> Julho \n");
+					}
+				 if (p->pago.ago==0){
+					printf(">>> Agosto \n");
+					}
+				 if (p->pago.set==0){
+					printf(">>> Setembro \n");
+					}
+				 if (p->pago.out==0){
+					printf(">>> Outubro \n");
+					}
+				 if (p->pago.nov==0){
+
+					printf(">>> Novembro \n");
+					}
+				 if (p->pago.dez==0){
+					printf(">>> Dezembro \n");
+					}
+			}
 	}
 }
 
@@ -1478,7 +1520,7 @@ void salvartudo(Lista* Aluno) {
 int menu_at(void){
 int escolha;
 do{
-printf("                -----------------------------------\n");
+	printf("                -----------------------------------\n");
 	printf("                #   1 - NOME                      #\n");
 	printf("                #   2 - SEXO                      #\n");
 	printf("                #   3 - CPF                       #\n");
@@ -1540,7 +1582,7 @@ int alunos_desativaados(Lista* aluno){
 		for (p=aluno;p!=NULL;p=p->prox){
 			if(p->ativo==0){
 			    cont++;
-				printf("ALUNOS INATIVOS ! ");
+				printf("ALUNOS INATIVOS ! \n");
 				printf("%s\n", p->nome);
 			}
 		}
@@ -1548,27 +1590,64 @@ int alunos_desativaados(Lista* aluno){
 	}
 	return cont;
 }
-//void inicializa_Medidas(Lista** x){
-
-    //*x->medidas.kg=0
-    //*x->medidas.biceps=0;
-    //*x->medidas.peito=0;
-    //*x->medidas.coxa=0;
-    //*x->medidas.alt=0;
-//}
 
 
 
-//void salvardespesas(Despesas d) {
-    //FILE *file = fopen("bancod.txt", "w");
-    //if (file == NULL) {
-        //printf("Houve um erro ao abrir o arquivo.\n");
-       // exit(1);
-    //} else {
-       // Despesas aux;
-        //for (aux = d; aux != NULL;) {
-          //  fprintf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f\n",aux.janeiro,aux.fevereiro,aux.marco,aux.abri,aux.maio,aux.jun,aux.jul,aux.ago,aux.set,aux.out,aux.nov,aux.dez);
-        //}
-        //fclose(file);
-    //}
-//}
+
+/*void salvardespesas(Despesas* d){
+	FILE *file = fopen("bancod.txt", "w");
+	if (file == NULL) {
+		printf("Houve um erro ao abrir o arquivo.\n");
+		exit(1);
+	}
+	else {
+		Despesas* aux;
+		for(aux = d;aux != NULL;aux=aux->prox){
+			fprintf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n",aux->janeiro, aux->fevereiro, aux->marco, aux->abri, aux->maio, aux->jun, aux->jul, aux->ago, aux->set, aux->out, aux->nov, aux->dez);
+		}
+		fclose(file);
+	}
+
+}
+
+Despesas* carregardespesas(Despesas* d){
+	FILE *file = fopen("bancod.txt", "a+");
+	float janeiro;
+	float fevereiro;
+	float marco;
+	float abri;
+	float maio;
+	float jun;
+	float jul;
+	float ago;
+	float set;
+	float out;
+	float nov;
+	float dez;
+	if (file == NULL) {
+		printf("Houve um erro ao abrir o arquivo.\n");
+		exit(1);
+		}
+	else {
+	while(fscanf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n", &janeiro, &fevereiro, &marco, &abri, &maio, &jun, &jul, &ago, &set, &out, &nov, &dez) != EOF){
+		Despesas* nova = (Despesas*) malloc(sizeof(Despesas));
+		nova->janeiro=janeiro;
+		nova->fevereiro=fevereiro;
+		nova->marco=marco;
+		nova->abri=abri;
+		nova->maio=maio;
+		nova->jun=jun;
+		nova->jul=jul;
+		nova->ago=ago;
+		nova->set=set;
+		nova->out=out;
+		nova->nov=nov;
+		nova->dez=dez;
+		nova->prox = d;
+		d = nova;
+
+		}
+	fclose(file);
+	}
+	return d;
+}*/
