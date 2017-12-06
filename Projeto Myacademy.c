@@ -1196,8 +1196,6 @@ Despesas despesas(Despesas me){
     }
 
 	total=luz+agua+funcionarios+manutencao;
-	//int mes;
-	printf(" TOTAL %f",total);
 	printf(" QUAL O MES DESEJA CONTABILIZAR AS DESPESAS ?");
 	int mes_pag=meses();
 	printf("chegou ");
@@ -1648,19 +1646,19 @@ Despesas carregardespesas(Despesas d){
 		}
 	else {
 	fscanf(file, "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|\n", &janeiro, &fevereiro, &marco, &abri, &maio, &jun, &jul, &ago, &set, &out, &nov, &dez);
-		Despesas nova = (Despesas) malloc(sizeof(Despesas));
-		nova->janeiro=janeiro;
-		nova->fevereiro=fevereiro;
-		nova->marco=marco;
-		nova->abri=abri;
-		nova->maio=maio;
-		nova->jun=jun;
-		nova->jul=jul;
-		nova->ago=ago;
-		nova->set=set;
-		nova->out=out;
-		nova->nov=nov;
-		nova->dez=dez;
+
+		d.janeiro=janeiro;
+		d.fevereiro=fevereiro;
+		d.marco=marco;
+		d.abri=abri;
+		d.maio=maio;
+		d.jun=jun;
+		d.jul=jul;
+		d.ago=ago;
+		d.set=set;
+		d.out=out;
+		d.nov=nov;
+		d.dez=dez;
 
 
 	fclose(file);
